@@ -12,7 +12,7 @@ export class InstructionScreen extends React.Component {
           navigation={this.props.navigation}
         />
         <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-          <Text>Instruction!</Text>
+          <Text>Instruction here!</Text>
         </View>
       </SafeAreaView>
     );
