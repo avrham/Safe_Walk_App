@@ -21,9 +21,16 @@ import {IMAGE} from '../constans/Image';
 export class TestScreen extends React.Component {
   constructor(props) {
     super(props);
+    this.state = {
+      rehabPlanID: '',
+    };
   }
-  async componentDidMount() {
+
+  componentDidMount() {
     this.getPatientDetails();
+    this.timeoutHandle = setTimeout(() => {
+      this.getRehabPlan();
+    }, 500);
   }
 
   getPatientDetails = async () => {
@@ -38,9 +45,9 @@ export class TestScreen extends React.Component {
     };
     try {
       const url = await axios(options);
-      console.log(url);
       if (url.status === 200) {
         this.props.store.userDetails = url.data;
+        this.setState({rehabPlanID: url.data.rehabPlanID});
       } else {
         Alert.alert('error has occured, Please try again in a few minutes');
       }
@@ -49,7 +56,31 @@ export class TestScreen extends React.Component {
       console.log('err', err);
     }
   };
-  
+
+  getRehabPlan = async props => {
+    const options = {
+      method: 'GET',
+      url: `${config.SERVER_URL}/rehabPlan/${this.state.rehabPlanID}`,
+      headers: {
+        'x-auth-token': this.props.store.userLoginDetails.token,
+      },
+    };
+
+    try {
+      const url = await axios(options);
+      if (url.status === 200) {
+        this.props.store.RehabPlan = url.data;
+      } else {
+        Alert.alert('error has occured, Please try again in a few minutes');
+      }
+    } catch (err) {
+      alert(
+        'error has occured when trying to return Data. please check your details',
+      );
+      console.log('err', err);
+    }
+  };
+
   render() {
     return (
       <SafeAreaView style={styles.app}>

@@ -5,5 +5,5 @@ export default class AppStore {
   @observable userDetails = [];
   @observable RehabPlan = [];
   @observable StatusVideo = [];
-  
+  @observable rehabProgress = 0.0;
 }

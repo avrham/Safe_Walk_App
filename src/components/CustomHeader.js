@@ -10,6 +10,7 @@ import {
 import {StyleSheet} from 'react-native';
 import {IMAGE} from '../constans/Image';
 import {observer, inject} from 'mobx-react';
+import {AnimatedCircularProgress} from 'react-native-circular-progress';
 
 @inject('store')
 @observer
@@ -18,13 +19,18 @@ export class CustomHeader extends React.Component {
     super(props);
   }
 
-  /*componentDidMount() {
-    this.props.isRehabScreen ? this.calculateProcecc() : '';
+  async componentDidMount() {
+    this.props.isRehabScreen ? await this.calculateProgress() : '';
   }
 
-  calculateProcecc = () => {
-    console.log(this.props.store.RehabPlan[1].status);
-  };*/
+  calculateProgress = () => {
+    const length = this.props.store.RehabPlan.videos.length;
+    let i, j;
+    for (i = 0, j = 0; i < length; i++) {
+      this.props.store.RehabPlan.videos[i].done ? j++ : '';
+    }
+    this.props.store.rehabProgress = (j / length) * 100;
+  };
 
   render() {
     let {navigation, isTestScreen, isRehabScreen, title} = this.props;
@@ -32,7 +38,7 @@ export class CustomHeader extends React.Component {
       <View
         style={{
           flexDirection: 'row',
-          height: 50,
+          height: 70,
         }}>
         <View
           style={{
@@ -69,19 +75,26 @@ export class CustomHeader extends React.Component {
             </TouchableOpacity>
           )}
         </View>
-
         <View
           style={{
-            flex: 1.5,
             justifyContent: 'center',
+            flex: 1.5,
           }}>
           <Text style={{textAlign: 'center'}}>{title}</Text>
         </View>
-        <View
-          style={{
-            flex: 1,
-          }}
-        />
+        <View style={{flex: 1, right: -50}}>
+          {isRehabScreen && (
+            <AnimatedCircularProgress
+              size={60}
+              width={9}
+              fill={this.props.store.rehabProgress}
+              tintColor="#00e0ff"
+              onAnimationComplete={() => console.log('onAnimationComplete')}
+              backgroundColor="#3d5875">
+              {fill => <Text>{`${this.props.store.rehabProgress}%`}</Text>}
+            </AnimatedCircularProgress>
+          )}
+        </View>
       </View>
     );
   }

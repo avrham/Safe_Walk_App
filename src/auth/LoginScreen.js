@@ -33,21 +33,6 @@ export class LoginScreen extends React.Component {
     this.state = {visible: false};
   }
 
-  componentDidMount() {
-    /*setInterval(() => {
-      this.setState({
-        visible: !this.state.visible,
-      });
-    }, 3000);*/
-    //this._loadInitialState().done();
-  }
-
-  /*_loadInitialState = async () => {
-    var value = await AsyncStorage.getItem('user');
-    if (value !== null) {
-      this.props.navigation.navigate('HomeApp');
-    }
-  };*/
   render() {
     const {visible} = this.state;
     return (
@@ -60,8 +45,9 @@ export class LoginScreen extends React.Component {
             animationStyle={styles.lottie}
             speed={1}
           />
+          <Text style={styles.title}>WELCOME TO</Text>
+
           <Image source={IMAGE.ICON_LOGO} style={styles.logo} />
-          <Text style={styles.title}>Sign in</Text>
           <TextInput
             onChangeText={val => (this.email = val)}
             clearButtonMode={'always'}
@@ -92,6 +78,7 @@ export class LoginScreen extends React.Component {
 
   login = async () => {
     this.setState({visible: true});
+
     const m = 'aneeman@gmail.com';
     const p = 'avin2010';
     //const m = 'aaabbb@gmail.com'
@@ -110,13 +97,11 @@ export class LoginScreen extends React.Component {
       const url = await axios(options);
       console.log(url);
       if (url.status === 200) {
-        this.onLoginSucsess();
         this.props.store.userLoginDetails = url.data;
         //AsyncStorage.setItem('token', url.data.token);
         this.props.navigation.navigate('HomeApp');
       } else {
         Alert.alert('error has occured, Please try again in a few minutes');
-        this.onLoginSucsess();
       }
     } catch (err) {
       alert(
@@ -124,6 +109,8 @@ export class LoginScreen extends React.Component {
       );
       console.log('err', err);
     }
+    this.onLoginSucsess();
+
     this.setState({visible: false});
   };
 }
@@ -146,14 +133,12 @@ const styles = StyleSheet.create({
     height: 50,
     opacity: 0.5,
   },
-  logo: {
-    top: -100,
-  },
+  logo: {},
   title: {
-    color: 'black',
+    color: '#60685d',
     fontFamily: 'ComicNeue-BoldItalic',
     fontSize: 30,
-    top: 80,
+    top: -20,
   },
   textInput: {
     borderWidth: 0.5,

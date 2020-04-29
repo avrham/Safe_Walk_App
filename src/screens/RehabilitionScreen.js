@@ -32,7 +32,8 @@ export class RehabilitionScreen extends React.Component {
       iconName: '',
       status: '',
       visible: false,
-      rehabbb: [],
+      Rehab_Plan: [],
+      mergeArray: [],
     };
   }
 
@@ -43,6 +44,7 @@ export class RehabilitionScreen extends React.Component {
   checkIfRehabPlanExsist = () => {
     if (this.props.store.userDetails.rehabPlanID != '') {
       this.setState({RehabPlanExsist: true});
+
       this.getVidoId();
     }
   };
@@ -110,7 +112,7 @@ export class RehabilitionScreen extends React.Component {
     try {
       const url = await axios(options);
       if (url.status === 200) {
-        this.setState({rehabbb: url.data});
+        this.setState({Rehab_Plan: url.data});
       } else {
         Alert.alert('error has occured, Please try again in a few minutes');
       }
@@ -120,17 +122,16 @@ export class RehabilitionScreen extends React.Component {
       );
       console.log('err', err);
     }
+    const MergeArray = mergeByKey(
+      'id',
+      this.state.Rehab_Plan,
+      this.state.videoStatus,
+    );
+    this.setState({mergeArray: MergeArray});
   };
 
   render() {
     const {visible} = this.state;
-
-    const mergeArray = mergeByKey(
-      'id',
-      this.state.rehabbb,
-      this.state.videoStatus,
-    );
-    //this.props.store.RehabPlan = mergeArray;
 
     return (
       <SafeAreaView style={styles.rehabView}>
@@ -150,7 +151,7 @@ export class RehabilitionScreen extends React.Component {
               speed={1}
             />
             <FlatList
-              data={mergeArray}
+              data={this.state.mergeArray}
               renderItem={({item}) => (
                 <TubeItem
                   id={item.id}
@@ -197,51 +198,52 @@ export default class TubeItem extends React.Component {
   }
   render() {
     return (
-      <TouchableWithoutFeedback onPress={this.onPress}>
-        <View>
-          <WebView
-            style={{width: '100%', height: 220}}
-            source={{uri: this.props.imageSrc}}
-          />
-          <SafeAreaView
+      <View>
+        <WebView
+          style={{width: '100%', height: 220}}
+          source={{uri: this.props.imageSrc}}
+        />
+        <SafeAreaView
+          style={{
+            flex: 1,
+            alignItems: 'center',
+            height: 100,
+            paddingTop: 10,
+          }}>
+          <Text
             style={{
-              flex: 1,
-              alignItems: 'center',
-              height: 100,
+              fontSize: 20,
+              fontFamily: 'ComicNeue-BoldItalic',
               paddingTop: 10,
             }}>
-            <Text
-              style={{
-                fontSize: 20,
-                fontFamily: 'ComicNeue-BoldItalic',
-                paddingTop: 10,
-              }}>
-              {this.props.title}
-            </Text>
-            <TouchableOpacity
-              style={{alignItems: 'center', paddingTop: 15}}
-              onPress={this.videoDone}>
-              <Image
-                source={
-                  this.props.iconName || this.state.ImgPress
-                    ? IMAGE.ICONE_DONE
-                    : IMAGE.ICONE_NOT_DONE
-                }
-                style={{width: 30, height: 30, justifyContent: 'center'}}
-                resizeMode="contain"
-              />
-              <Text style={styles.instructionText}>
-                {this.props.iconStatus}
-              </Text>
-            </TouchableOpacity>
-          </SafeAreaView>
-        </View>
-      </TouchableWithoutFeedback>
+            {this.props.title}
+          </Text>
+          <TouchableOpacity
+            disabled={this.props.iconName || this.state.ImgPress ? true : false}
+            style={{alignItems: 'center', paddingTop: 15}}
+            onPress={this.videoDone}>
+            <Image
+              source={
+                this.props.iconName || this.state.ImgPress
+                  ? IMAGE.ICONE_DONE
+                  : IMAGE.ICONE_NOT_DONE
+              }
+              style={{width: 30, height: 30, justifyContent: 'center'}}
+              resizeMode="contain"
+            />
+            <Text style={styles.instructionText}>{this.props.iconStatus}</Text>
+          </TouchableOpacity>
+        </SafeAreaView>
+      </View>
     );
   }
 
   videoDone = async () => {
     this.setState({ImgPress: true});
+    this.props.store.rehabProgress =
+      this.props.store.rehabProgress +
+      (1 / this.props.store.RehabPlan.videos.length) * 100;
+
     const options = {
       method: 'POST',
       url: `${config.SERVER_URL}/rehabPlan/${
@@ -273,9 +275,13 @@ export default class TubeItem extends React.Component {
 }
 
 const styles = StyleSheet.create({
+  lottie: {
+    width: 100,
+    height: 100,
+  },
   rehabView: {
     flex: 1,
-    marginBottom: 50,
+    marginBottom: 70,
   },
   SafeAreaAlert: {
     flex: 1,

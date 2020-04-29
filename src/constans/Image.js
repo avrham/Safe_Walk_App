@@ -12,6 +12,7 @@ const IMAGE = {
   ICONE_NOT_DONE: require('../../assets/images/NotDone.png'),
   ICOM_ALERT: require('../../assets/images/alert.png'),
   ICON_INSTRUCTION: require('../../assets/images/instruction.png'),
+  ICON_TESTOK: require('../../assets/images/testOk.png'),
 };
 
 export {IMAGE};
