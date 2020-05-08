@@ -9,6 +9,10 @@ import {
   TextInput,
   AsyncStorage,
   Alert,
+  StatusBar,
+  KeyboardAvoidingView,
+  Keyboard,
+  TouchableWithoutFeedback,
 } from 'react-native';
 import {StyleSheet} from 'react-native';
 import AnimatedLoader from 'react-native-animated-loader';
@@ -37,36 +41,56 @@ export class LoginScreen extends React.Component {
     const {visible} = this.state;
     return (
       <SafeAreaView style={styles.app}>
-        <View style={styles.background}>
-          <AnimatedLoader
-            visible={visible}
-            overlayColor="rgba(255,255,255,0.75)"
-            source={require('../constans/loader.json')}
-            animationStyle={styles.lottie}
-            speed={1}
-          />
-          <Text style={styles.title}>WELCOME TO</Text>
+        <AnimatedLoader
+          visible={visible}
+          overlayColor="rgba(255,255,255,0.75)"
+          source={require('../constans/loader.json')}
+          animationStyle={styles.lottie}
+          speed={1}
+        />
+        <StatusBar barStyle="light-content" />
+        <KeyboardAvoidingView behavior="padding" style={styles.app}>
+          <TouchableWithoutFeedback
+            style={styles.app}
+            onPress={Keyboard.dismiss}>
+            <View style={styles.logoContainer}>
+              <View style={styles.logoContainer}>
+                <Image source={IMAGE.ICON_LOGO} style={styles.logo} />
+                <Text style={styles.title}>Account Information</Text>
+              </View>
 
-          <Image source={IMAGE.ICON_LOGO} style={styles.logo} />
-          <TextInput
-            onChangeText={val => (this.email = val)}
-            clearButtonMode={'always'}
-            style={styles.textInput}
-            placeholder={'Email'}
-            placeholderTextColor={'gray'}
-          />
-          <TextInput
-            onChangeText={val => (this.password = val)}
-            secureTextEntry
-            clearButtonMode={'always'}
-            style={styles.textInput}
-            placeholder={'Password'}
-            placeholderTextColor={'gray'}
-          />
-          <TouchableOpacity style={styles.button} onPress={this.login}>
-            <Text style={styles.buttonText}>LogIn</Text>
-          </TouchableOpacity>
-        </View>
+              <View style={styles.infoContainer}>
+                <TextInput
+                  onChangeText={val => (this.email = val)}
+                  clearButtonMode={'always'}
+                  style={styles.input}
+                  placeholder={'Enter Email'}
+                  placeholderTextColor={'rgba(255,255,255,0.8)'}
+                  keyboardType="email-address"
+                  returnKeyType="next"
+                  autoCorrect={false}
+                  onSubmitEditing={() => this.refs.txtPassword.focus()}
+                />
+                <TextInput
+                  onChangeText={val => (this.password = val)}
+                  clearButtonMode={'always'}
+                  style={styles.input}
+                  placeholder={'Enter Password'}
+                  placeholderTextColor={'rgba(255,255,255,0.8)'}
+                  returnKeyType="go"
+                  secureTextEntry
+                  autoCorrect={false}
+                  ref={'txtPassword'}
+                />
+                <TouchableOpacity
+                  style={styles.buttonContainer}
+                  onPress={this.login}>
+                  <Text style={styles.buttonText}>SIGN IN</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </TouchableWithoutFeedback>
+        </KeyboardAvoidingView>
       </SafeAreaView>
     );
   }
@@ -120,12 +144,6 @@ const styles = StyleSheet.create({
     width: 100,
     height: 100,
   },
-  background: {
-    height: '100%',
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
   loader: {
     position: 'absolute',
     top: Dimensions.get('window').height * 0.565,
@@ -133,13 +151,66 @@ const styles = StyleSheet.create({
     height: 50,
     opacity: 0.5,
   },
-  logo: {},
-  title: {
-    color: '#60685d',
-    fontFamily: 'ComicNeue-BoldItalic',
-    fontSize: 30,
-    top: -20,
+
+  logoContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
+  logo: {
+    width: 180,
+    height: 70,
+  },
+  title: {
+    color: '#f7c744',
+    fontFamily: 'ComicNeue-BoldItalic',
+    fontSize: 20,
+    textAlign: 'center',
+    marginTop: 8,
+    opacity: 0.9,
+  },
+  infoContainer: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 0,
+    height: 200,
+    padding: 20,
+  },
+  input: {
+    height: 40,
+    backgroundColor: 'rgba(255,255,255,0.2)',
+    color: '#FFF',
+    paddingHorizontal: 10,
+    marginBottom: 20,
+    borderRadius: 6,
+    borderWidth: 0.5,
+  },
+
+  buttonContainer: {
+    backgroundColor: '#f7c744',
+    //width: Dimensions.get('window').width * 0.75,
+    //height: Dimensions.get('window').height * 0.058,
+    borderRadius: 9,
+    paddingVertical: 15,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  buttonText: {
+    color: 'rgb(32,53,70)',
+    //fontFamily: 'ComicNeue-BoldItalic',
+    fontSize: 19,
+    textAlign: 'center',
+    fontWeight: 'bold',
+  },
+  app: {
+    flex: 1,
+    backgroundColor: 'rgb(32,53,70)',
+    flexDirection: 'column',
+  },
+});
+
+/*
   textInput: {
     borderWidth: 0.5,
     borderRadius: 6,
@@ -153,22 +224,4 @@ const styles = StyleSheet.create({
     color: 'black',
     paddingLeft: 10,
     marginTop: 20,
-  },
-  button: {
-    backgroundColor: '#60685d',
-    width: Dimensions.get('window').width * 0.75,
-    height: Dimensions.get('window').height * 0.058,
-    borderRadius: 9,
-    top: 130,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  buttonText: {
-    color: '#f2f0f1',
-    fontFamily: 'ComicNeue-BoldItalic',
-    fontSize: 19,
-  },
-  app: {
-    flex: 1,
-  },
-});
+  },*/

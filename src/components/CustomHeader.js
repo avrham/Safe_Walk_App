@@ -39,6 +39,8 @@ export class CustomHeader extends React.Component {
         style={{
           flexDirection: 'row',
           height: 70,
+          borderBottomColor: 'black',
+          borderBottomWidth: 1,
         }}>
         <View
           style={{
@@ -89,7 +91,6 @@ export class CustomHeader extends React.Component {
               width={9}
               fill={this.props.store.rehabProgress}
               tintColor="#00e0ff"
-              onAnimationComplete={() => console.log('onAnimationComplete')}
               backgroundColor="#3d5875">
               {fill => <Text>{`${this.props.store.rehabProgress}%`}</Text>}
             </AnimatedCircularProgress>
