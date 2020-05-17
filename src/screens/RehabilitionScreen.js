@@ -8,6 +8,7 @@ import {
   TouchableOpacityComponent,
   TouchableWithoutFeedback,
   Image,
+  StatusBar
 } from 'react-native';
 import {StyleSheet} from 'react-native';
 import {WebView} from 'react-native-webview';
@@ -135,6 +136,7 @@ export class RehabilitionScreen extends React.Component {
 
     return (
       <SafeAreaView style={styles.rehabView}>
+        <StatusBar barStyle="dark-content"/>
         <CustomHeader
           title="Rehabilition"
           isRehabScreen={true}
@@ -213,7 +215,7 @@ export default class TubeItem extends React.Component {
           <Text
             style={{
               fontSize: 20,
-              fontFamily: 'ComicNeue-BoldItalic',
+              fontFamily: 'Lato-Light',
               paddingTop: 10,
             }}>
             {this.props.title}
@@ -281,7 +283,7 @@ const styles = StyleSheet.create({
   },
   rehabView: {
     flex: 1,
-    marginBottom: 70,
+    marginBottom: 100,
   },
   SafeAreaAlert: {
     flex: 1,

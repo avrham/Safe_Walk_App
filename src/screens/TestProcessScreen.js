@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Text, View, SafeAreaView, Image} from 'react-native';
+import {Text, View, SafeAreaView, Image, BackHandler} from 'react-native';
 import {StyleSheet} from 'react-native';
 import {CustomHeader} from '../export';
 import {IMAGE} from '../constans/Image';
@@ -36,10 +36,10 @@ export class TestProcessScreen extends React.Component {
   }
   render() {
     return (
-      <SafeAreaView style={{flex: 1}}>
+      <SafeAreaView style={{flex: 1, backgroundColor: 'rgb(32,53,70)'}}>
         <CustomHeader title="Test Process" navigation={this.props.navigation} />
 
-        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#C9BDBD'}}>
           {this.state.isPart1 && (
             <Text style={styles.message}>
               Please stand and don't move for 5 seconds !

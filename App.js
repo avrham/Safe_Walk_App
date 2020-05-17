@@ -69,30 +69,8 @@ function RehabPlanStack() {
 function TabNavigator() {
   return (
     <Tab.Navigator
-      screenOptions={({route}) => ({
-        tabBarIcon: ({focused, color, size}) => {
-          let iconName;
-
-          if (route.name === 'Test') {
-            iconName = focused ? IMAGE.ICON_TEST_PRESS : IMAGE.ICON_TEST;
-          } else if (route.name === 'Rehab Plan') {
-            iconName = focused ? IMAGE.ICON_RP_PRESS : IMAGE.ICON_RP;
-          }
-
-          // You can return any component that you like here!
-          return (
-            <Image
-              source={iconName}
-              style={{width: 20, height: 20}}
-              resizeMode="contain"
-            />
-          );
-        },
-      })}
-      tabBarOptions={{
-        activeTintColor: 'tomato',
-        inactiveTintColor: 'black',
-      }}>
+     
+      >
       <Tab.Screen name="Test" component={TestStack} />
       <Tab.Screen name="Rehab Plan" component={RehabPlanStack} />
     </Tab.Navigator>
@@ -105,7 +83,8 @@ function DrawerNavigator({navigation}) {
     <Drawer.Navigator
       initialRouteName="MenuTab"
       drawerContent={() => <CustomDrawerContent navigation={navigation} />}>
-      <Drawer.Screen name="MenuTab" component={TabNavigator} />
+      <Drawer.Screen name="MenuTab" component={TestStack} />
+      <Drawer.Screen name="RehabPlan" component={RehabPlanStack} />
       <Drawer.Screen name="Notifications" component={NotificationsScreen} />
     </Drawer.Navigator>
   );

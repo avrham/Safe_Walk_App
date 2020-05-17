@@ -6,15 +6,16 @@ import {
   TouchableOpacity,
   Dimensions,
   Image,
+  Button,
 } from 'react-native';
 import {StyleSheet} from 'react-native';
 import {CustomHeader} from '../export';
-import {RVText} from '../core';
 import {observer, inject} from 'mobx-react';
-import {observable} from 'mobx';
 import axios from 'axios';
 import config from '../../config.json';
-import {IMAGE} from '../constans/Image';
+import ProgressBarAnimated from 'react-native-progress-bar-animated';
+
+
 
 @inject('store')
 @observer
@@ -23,17 +24,26 @@ export class TestScreen extends React.Component {
     super(props);
     this.state = {
       rehabPlanID: '',
+      progressWithOnComplete: 0,
+      progressCustomized: 0,
+      maxValue:100
     };
   }
 
   componentDidMount() {
-    this.getPatientDetails();
-    this.timeoutHandle = setTimeout(() => {
-      this.getRehabPlan();
-    }, 500);
+    this.calculateProgress() ;
   }
 
-  getPatientDetails = async () => {
+  calculateProgress = () => {
+    const length = this.props.store.RehabPlan.videos.length;
+    let i, j;
+    for (i = 0, j = 0; i < length; i++) {
+      this.props.store.RehabPlan.videos[i].done ? j++ : '';
+    }
+    this.props.store.rehabProgress = (j / length) * 100;
+  };
+
+  /*getPatientDetails = async () => {
     const options = {
       method: 'GET',
       url: `${config.SERVER_URL}/patient/${
@@ -58,6 +68,7 @@ export class TestScreen extends React.Component {
   };
 
   getRehabPlan = async props => {
+
     const options = {
       method: 'GET',
       url: `${config.SERVER_URL}/rehabPlan/${this.state.rehabPlanID}`,
@@ -80,12 +91,15 @@ export class TestScreen extends React.Component {
       console.log('err', err);
     }
   };
-
+*/
   render() {
+
+    const barWidth = Dimensions.get('screen').width - 1500;
+
+
     return (
       <SafeAreaView style={styles.app}>
         <CustomHeader
-          title="Test"
           isTestScreen={true}
           navigation={this.props.navigation}
         />
@@ -96,18 +110,24 @@ export class TestScreen extends React.Component {
           <Text style={styles.sentence}>
             Before starting, please connect your kit
           </Text>
-          <TouchableOpacity style={styles.button} onPress={this.StartTest}>
+          <TouchableOpacity style={styles.button} onPress={this.StartTest} >
             <Text style={styles.buttonText}>Start Test</Text>
           </TouchableOpacity>
           <TouchableOpacity
-            style={styles.instruction}
+            style={styles.instructionButton}
             onPress={() => this.props.navigation.navigate('Description')}>
-            <Image
-              style={styles.instructionImg}
-              source={IMAGE.ICON_INSTRUCTION}
+              <Text style={styles.instructionTitle}>Press to instruction</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.ProgressBarAnimated} onPress={() => this.props.navigation.navigate('RehabPlan')}>
+            <Text style={styles.label}>{`You've made ${this.props.store.rehabProgress}% progress`} </Text>
+            <ProgressBarAnimated
+              width={300}
+              maxValue={100}
+              value={this.props.store.rehabProgress}
+              backgroundColorOnComplete="#6CC644"
+              backgroundColor="#C9BDBD"
             />
           </TouchableOpacity>
-          <Text style={styles.instructionTitle}>Press to instruction</Text>
         </View>
       </SafeAreaView>
     );
@@ -258,25 +278,34 @@ export class TestScreen extends React.Component {
 }
 
 const styles = StyleSheet.create({
+
+  lottie: {
+    width:100,
+    height:100
+  },
+
   background: {
     height: '100%',
     flex: 1,
     alignItems: 'center',
   },
+
   title: {
-    color: 'black',
+    color: '#C9BDBD',
     fontFamily: 'ComicNeue-BoldItalic',
     fontSize: 25,
     top: 80,
   },
+
   sentence: {
-    color: 'black',
+    color: '#C9BDBD',
     fontFamily: 'ComicNeue-BoldItalic',
     fontSize: 20,
-    top: 80,
+    top: 85,
   },
+
   button: {
-    backgroundColor: '#373838',
+    backgroundColor: '#5D8B91',
     height: 200,
     width: 200,
     padding: 5,
@@ -284,27 +313,53 @@ const styles = StyleSheet.create({
     top: 200,
     alignItems: 'center',
     justifyContent: 'center',
+    borderWidth:2,
+    borderColor:"#C9BDBD"
   },
+
   buttonText: {
-    color: '#f2f0f1',
+    color: '#FAFAFA',
     fontFamily: 'ComicNeue-BoldItalic',
     fontSize: 25,
   },
-  instruction: {
-    top: Dimensions.get('window').height * 0.31,
+
+  instructionButton: {
+    top: 300,
     textAlign: 'center',
     justifyContent: 'center',
+    backgroundColor: '#5D8B91',
+    borderRadius: 5,
+    width:200,
+    height:42,
+    alignItems: 'center',
   },
-  instructionImg: {
-    width: 40,
-    height: 40,
-  },
+
   instructionTitle: {
-    top: Dimensions.get('window').height * 0.31,
     fontSize: 20,
     fontFamily: 'ComicNeue-BoldItalic',
+    color: '#FAFAFA'
   },
+
   app: {
     flex: 1,
+    backgroundColor: 'rgb(32,53,70)',
   },
+
+  label: {
+    color: '#999',
+    fontSize: 14,
+    fontWeight: '500',
+    marginBottom: 10,
+    textAlign:'center'
+  },
+
+  ProgressBarAnimated:{
+    flex:1,
+    marginTop: 350,
+    borderColor:'black',
+    borderWidth:2,
+    borderColor:"#C9BDBD",
+    padding:10
+
+  }
 });

@@ -29,7 +29,7 @@ export class CustomDrawerContent extends React.Component {
         },
         {
           navOptionName: 'Rehab Plan',
-          screenToNavigate: 'Rehab Plan',
+          screenToNavigate: 'RehabPlan',
         },
       ],
     };
@@ -91,7 +91,7 @@ const styles = StyleSheet.create({
   sideMenuContainer: {
     width: '100%',
     height: '100%',
-    backgroundColor: '#fff',
+    backgroundColor: '#C9BDBD',
     alignItems: 'center',
     paddingTop: 20,
   },

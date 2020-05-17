@@ -19,84 +19,83 @@ export class CustomHeader extends React.Component {
     super(props);
   }
 
-  async componentDidMount() {
-    this.props.isRehabScreen ? await this.calculateProgress() : '';
-  }
-
-  calculateProgress = () => {
-    const length = this.props.store.RehabPlan.videos.length;
-    let i, j;
-    for (i = 0, j = 0; i < length; i++) {
-      this.props.store.RehabPlan.videos[i].done ? j++ : '';
-    }
-    this.props.store.rehabProgress = (j / length) * 100;
-  };
 
   render() {
-    let {navigation, isTestScreen, isRehabScreen, title} = this.props;
+    let {navigation, isTestScreen, isRehabScreen} = this.props;
     return (
-      <View
+      <SafeAreaView
         style={{
           flexDirection: 'row',
-          height: 70,
-          borderBottomColor: 'black',
+          height: 100,
+          borderBottomColor: '#5D8B91',
           borderBottomWidth: 1,
         }}>
-        <View
+           <TouchableOpacity
+             style={{ flex:1,flexDirection: 'row',alignItems: 'center'}}
+             onPress={() => this.props.navigation.navigate('Test')}>
+             <Image
+               style={styles.logoIcon}
+               source={IMAGE.ICON_LOGO}
+             />
+           </TouchableOpacity>
+        <SafeAreaView
           style={{
             flex: 1,
             justifyContent: 'center',
+            right:25
           }}>
-          {isTestScreen && (
+          {(isTestScreen || isRehabScreen) && (
+            <SafeAreaView>
             <TouchableOpacity onPress={() => navigation.openDrawer()}>
               <Image
-                style={{width: 30, height: 30, marginLeft: 10}}
+                style={{width: 30, height: 30}}
                 source={IMAGE.ICON_MENU}
                 resizeMode="contain"
               />
             </TouchableOpacity>
-          )}
-          {isRehabScreen && (
-            <TouchableOpacity onPress={() => navigation.openDrawer()}>
-              <Image
-                style={{width: 30, height: 30, marginLeft: 10}}
-                source={IMAGE.ICON_MENU}
-                resizeMode="contain"
-              />
-            </TouchableOpacity>
+          </SafeAreaView>
           )}
           {!isRehabScreen && !isTestScreen && (
             <TouchableOpacity
               style={{flexDirection: 'row', alignItems: 'center'}}
               onPress={() => navigation.goBack()}>
               <Image
-                style={{width: 20, height: 20, marginLeft: 5}}
+                style={{width: 25, height: 25}}
                 source={IMAGE.ICON_RETURN}
                 resizeMode="contain"
               />
+              <Text style={{color:'#5D8B91'}}>Back</Text>
             </TouchableOpacity>
           )}
-        </View>
+        </SafeAreaView>
         <View
           style={{
             justifyContent: 'center',
-            flex: 1.5,
+            marginLeft:300,
+            right:15
           }}>
-          <Text style={{textAlign: 'center'}}>{title}</Text>
+            <Image
+          source={{uri: this.props.store.userDetails.picture}}
+          style={styles.sideMenuProfileIcon}
+        />
         </View>
-        <View style={{flex: 1, right: -50}}>
-          {isRehabScreen && (
-            <AnimatedCircularProgress
-              size={60}
-              width={9}
-              fill={this.props.store.rehabProgress}
-              tintColor="#00e0ff"
-              backgroundColor="#3d5875">
-              {fill => <Text>{`${this.props.store.rehabProgress}%`}</Text>}
-            </AnimatedCircularProgress>
-          )}
-        </View>
-      </View>
+      </SafeAreaView>
     );
   }
 }
+
+const styles = StyleSheet.create({
+  
+  sideMenuProfileIcon: {
+    alignSelf: 'center',
+    height: 50,
+    width: 50,
+    borderWidth: 1,
+    borderRadius: 75,
+  },
+  logoIcon:{
+    marginLeft:148, 
+    width:125,
+    height:49,
+  }
+});
