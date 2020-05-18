@@ -3,12 +3,16 @@ import { Text, View, SafeAreaView, TouchableOpacity, StatusBar } from 'react-nat
 import { StyleSheet } from 'react-native';
 import { CustomHeader } from '../export';
 import { WebView } from 'react-native-webview';
+import { CustomAppStatusBar } from '../components/AppBar'
+import {colorStatus} from '../components/colors'
 
-export class InstructionScreen extends React.Component {
+
+export class VideoDetailesScreen extends React.Component {
   render() {
     return (
       <SafeAreaView style={{ flex: 1, backgroundColor: 'rgb(32,53,70)' }}>
-        <StatusBar barStyle="dark-content" />
+        <CustomAppStatusBar
+         backgroundColor={colorStatus}></CustomAppStatusBar> 
         <View >
           <CustomHeader
             navigation={this.props.navigation}
@@ -19,8 +23,8 @@ export class InstructionScreen extends React.Component {
             color: '#C9BDBD',
             fontFamily: 'Lato-Bold',
             fontSize: 24,
-            textAlign: 'center', 
-            bottom:100
+            textAlign: 'center',
+            bottom: 100
           }}>Before you start your test, please watch this movie!</Text>
           <View style={{ width: '100%', height: 250 }}>
             <WebView style={{ margin: 10 }} source={{ uri: 'https://www.youtube.com/embed/CdCClhtKH2Q' }} />

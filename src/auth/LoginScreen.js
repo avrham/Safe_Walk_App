@@ -157,9 +157,9 @@ export class LoginScreen extends React.Component {
   login = async () => {
 
     this.setState({ visible: true });
-    const m = 'aneeman@gmail.com';
-    const p = 'avin2010';
-    //const m = 'aaabbb@gmail.com'
+    const m = 'ziperfal@gmail.com';
+    const p = '123456';
+    //const m = 'anneman@gmail.com'
     //const p = 'aaabbb'
     const options = {
       method: 'post',
@@ -218,8 +218,8 @@ const styles = StyleSheet.create({
     height: 70,
   },
   title: {
-    color: '#f7c744',
-    fontFamily: 'ComicNeue-BoldItalic',
+    color: '#C9BDBD',
+    fontFamily: 'Lato-Bold',
     fontSize: 20,
     textAlign: 'center',
     marginTop: 8,

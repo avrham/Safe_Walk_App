@@ -40,7 +40,7 @@ export class TestScreen extends React.Component {
     for (i = 0, j = 0; i < length; i++) {
       this.props.store.RehabPlan.videos[i].done ? j++ : '';
     }
-    this.props.store.rehabProgress = (j / length) * 100;
+    this.props.store.rehabProgress = ((j / length) * 100).toFixed(1);
   };
 
   /*getPatientDetails = async () => {
@@ -102,10 +102,11 @@ export class TestScreen extends React.Component {
         <CustomHeader
           isTestScreen={true}
           navigation={this.props.navigation}
+          
         />
         <View style={styles.background}>
           <Text style={styles.title}>
-            hey {this.props.store.userDetails.name}!
+            Hey {this.props.store.userDetails.name}!
           </Text>
           <Text style={styles.sentence}>
             Before starting, please connect your kit
@@ -292,14 +293,14 @@ const styles = StyleSheet.create({
 
   title: {
     color: '#C9BDBD',
-    fontFamily: 'ComicNeue-BoldItalic',
+    fontFamily: 'Lato-Bold',
     fontSize: 25,
     top: 80,
   },
 
   sentence: {
     color: '#C9BDBD',
-    fontFamily: 'ComicNeue-BoldItalic',
+    fontFamily: 'Lato-Regular',
     fontSize: 20,
     top: 85,
   },
@@ -319,7 +320,7 @@ const styles = StyleSheet.create({
 
   buttonText: {
     color: '#FAFAFA',
-    fontFamily: 'ComicNeue-BoldItalic',
+    fontFamily: 'Lato-Bold',
     fontSize: 25,
   },
 
@@ -336,7 +337,7 @@ const styles = StyleSheet.create({
 
   instructionTitle: {
     fontSize: 20,
-    fontFamily: 'ComicNeue-BoldItalic',
+    fontFamily: 'Lato-Regular',
     color: '#FAFAFA'
   },
 
@@ -350,7 +351,9 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '500',
     marginBottom: 10,
-    textAlign:'center'
+    textAlign:'center',
+    fontFamily: 'Lato-Regular',
+
   },
 
   ProgressBarAnimated:{

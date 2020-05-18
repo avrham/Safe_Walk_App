@@ -5,8 +5,6 @@ import {
   SafeAreaView,
   TouchableOpacity,
   FlatList,
-  TouchableOpacityComponent,
-  TouchableWithoutFeedback,
   Image,
   StatusBar
 } from 'react-native';
@@ -15,7 +13,6 @@ import {WebView} from 'react-native-webview';
 import {CustomHeader} from '../export';
 import config from '../../config.json';
 import {observer, inject} from 'mobx-react';
-import {observable, action} from 'mobx';
 import axios from 'axios';
 import {IMAGE} from '../constans/Image';
 import mergeByKey from 'array-merge-by-key';
@@ -142,7 +139,6 @@ export class RehabilitionScreen extends React.Component {
           isRehabScreen={true}
           navigation={this.props.navigation}
         />
-
         {this.state.RehabPlanExsist && (
           <View>
             <AnimatedLoader
@@ -178,8 +174,7 @@ export class RehabilitionScreen extends React.Component {
                 The system does not yet have a Rehabilitation program
               </Text>
               <Text style={styles.message}>
-                If you made test already, Your program will appear as soon as
-                possible
+                If you made test already, Your program will appear as soon as possible
               </Text>
             </View>
           </SafeAreaView>

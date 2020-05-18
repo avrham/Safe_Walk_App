@@ -6,6 +6,7 @@ import {
   Image,
   TouchableOpacity,
   ScrollView,
+  StatusBar
 } from 'react-native';
 import {StyleSheet} from 'react-native';
 import {IMAGE} from '../constans/Image';
@@ -28,8 +29,10 @@ export class CustomHeader extends React.Component {
           flexDirection: 'row',
           height: 100,
           borderBottomColor: '#5D8B91',
-          borderBottomWidth: 1,
+          borderBottomWidth: 1, 
+          backgroundColor:'#C9BDBD'        
         }}>
+          <StatusBar color='#C9BDBD' />
            <TouchableOpacity
              style={{ flex:1,flexDirection: 'row',alignItems: 'center'}}
              onPress={() => this.props.navigation.navigate('Test')}>
@@ -45,7 +48,7 @@ export class CustomHeader extends React.Component {
             right:25
           }}>
           {(isTestScreen || isRehabScreen) && (
-            <SafeAreaView>
+            <SafeAreaView >
             <TouchableOpacity onPress={() => navigation.openDrawer()}>
               <Image
                 style={{width: 30, height: 30}}
