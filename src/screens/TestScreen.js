@@ -31,7 +31,9 @@ export class TestScreen extends React.Component {
   }
 
   componentDidMount() {
-    this.calculateProgress() ;
+    if (this.props.store.userDetails.rehabPlanID != '') {
+      this.calculateProgress() ;
+    }
   }
 
   calculateProgress = () => {
@@ -40,7 +42,7 @@ export class TestScreen extends React.Component {
     for (i = 0, j = 0; i < length; i++) {
       this.props.store.RehabPlan.videos[i].done ? j++ : '';
     }
-    this.props.store.rehabProgress = ((j / length) * 100).toFixed(1);
+    this.props.store.rehabProgress = Number(((j / length) * 100).toFixed(1));
   };
 
   /*getPatientDetails = async () => {
@@ -102,7 +104,6 @@ export class TestScreen extends React.Component {
         <CustomHeader
           isTestScreen={true}
           navigation={this.props.navigation}
-          
         />
         <View style={styles.background}>
           <Text style={styles.title}>
@@ -116,7 +117,7 @@ export class TestScreen extends React.Component {
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.instructionButton}
-            onPress={() => this.props.navigation.navigate('Description')}>
+            onPress={() => this.props.navigation.navigate('VideoDetailes')}>
               <Text style={styles.instructionTitle}>Press to instruction</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.ProgressBarAnimated} onPress={() => this.props.navigation.navigate('RehabPlan')}>

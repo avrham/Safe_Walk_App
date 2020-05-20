@@ -117,8 +117,13 @@ export class LoginScreen extends React.Component {
       const url = await axios(options);
       if (url.status === 200) {
         this.props.store.userDetails = url.data;
-        this.getRehabPlan(url.data.rehabPlanID);
-        this.setState({ rehabPlanID: url.data.rehabPlanID });
+        if (url.data.rehabPlanID != ''){
+          this.getRehabPlan(url.data.rehabPlanID);
+          this.setState({ rehabPlanID: url.data.rehabPlanID });
+        }
+        else{
+          this.props.navigation.navigate('HomeApp');
+        }
       } else {
         Alert.alert('error has occured, Please try again in a few minutes');
       }
@@ -129,7 +134,6 @@ export class LoginScreen extends React.Component {
   };
 
   getRehabPlan = async (rehabPlanID) => {
-
     const options = {
       method: 'GET',
       url: `${config.SERVER_URL}/rehabPlan/${rehabPlanID}`,
@@ -159,7 +163,7 @@ export class LoginScreen extends React.Component {
     this.setState({ visible: true });
     const m = 'ziperfal@gmail.com';
     const p = '123456';
-    //const m = 'anneman@gmail.com'
+    //const m = 'aneeman@gmail.com'
     //const p = 'aaabbb'
     const options = {
       method: 'post',
@@ -178,7 +182,6 @@ export class LoginScreen extends React.Component {
       if (url.status === 200) {
         this.props.store.userLoginDetails = url.data;
         this.getPatientDetails();
-       
       } 
       else {
         Alert.alert('error has occured, Please try again in a few minutes');
