@@ -17,7 +17,17 @@ import axios from 'axios';
 import {IMAGE} from '../constans/Image';
 import mergeByKey from 'array-merge-by-key';
 import AnimatedLoader from 'react-native-animated-loader';
+import {ListItem} from 'react-native-elements';
+import TouchableScale from 'react-native-touchable-scale';
+import LinearGradient from 'react-native-linear-gradient';
 
+function Item({title}) {
+  return (
+    <View style={styles.item}>
+      <Text style={styles.title}>{title}</Text>
+    </View>
+  );
+}
 @inject('store')
 @observer
 export class RehabilitionScreen extends React.Component {
@@ -105,6 +115,33 @@ export class RehabilitionScreen extends React.Component {
     this.setState({mergeArray: MergeArray});
   };
 
+  renderItem = ({item}) => (
+    <ListItem
+      Component={TouchableScale}
+      friction={90} //
+      tension={100} // These props are passed to the parent component (here TouchableScale)
+      activeScale={0.95} //
+      linearGradientProps={{
+        colors: ['#FF9800', '#F44336'],
+        start: {x: 1, y: 0},
+        end: {x: 0.2, y: 0},
+      }}
+      ViewComponent={LinearGradient} // Only if no expo
+      leftAvatar={{
+        rounded: true,
+        source: {
+          uri:
+            'https://lh3.googleusercontent.com/proxy/UHQt0tb2uK9WD-_Q3a1o3xWv-t--v00m4EsdhrgupTjiyjcj_yDF71gX3eTavJp94G32kpJKb7VdF1_Z4T37BTstEZp_qVoTeCkFJe8sJGLJenoAi0zu_prYek2Ucan640k9648GbKbvUrBLE_4V0MI8ki0bELci2LX5Kh6Ev4gdbt0BgSSn8GUtJGISZAjea333bQolJYVmtyIZIlfrCITB-3TIoFXy2hKBsncMx-jwlotUZ9YOyGJ7fJpGTFT0bVVKy4w6-rrxcqKX2B4q_kukL4kfcN2dPkkiaXRx0J6u9352VbCtf8Kz3Udo9S4vNzPdyHRpufTdnjhCN6AB71FDnA',
+        },
+      }}
+      title="Chris Jackson"
+      titleStyle={{color: 'white', fontWeight: 'bold'}}
+      subtitleStyle={{color: 'white'}}
+      subtitle="Vice Chairman"
+      chevron={{color: 'white'}}
+    />
+  );
+
   render() {
     const {visible} = this.state;
 
@@ -124,15 +161,7 @@ export class RehabilitionScreen extends React.Component {
             <Text>{this.props.store.RehabPlan.instructions}</Text>
             <FlatList
               data={this.state.mergeArray}
-              renderItem={({item}) => (
-                <TubeItem
-                  id={item.id}
-                  title={item.name}
-                  imageSrc={item.link}
-                  iconName={item.status}
-                  iconStatus={item.status ? 'DONE' : 'PRESS AFTER DONE'}
-                />
-              )}
+              renderItem={this.renderItem}
             />
           </View>
         )}

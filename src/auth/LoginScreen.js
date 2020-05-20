@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import {
   Text,
   View,
@@ -14,12 +14,12 @@ import {
   Keyboard,
   TouchableWithoutFeedback,
 } from 'react-native';
-import { StyleSheet } from 'react-native';
+import {StyleSheet} from 'react-native';
 import AnimatedLoader from 'react-native-animated-loader';
-import { IMAGE } from '../constans/Image';
+import {IMAGE} from '../constans/Image';
 import config from '../../config.json';
-import { observer, inject } from 'mobx-react';
-import { observable, action } from 'mobx';
+import {observer, inject} from 'mobx-react';
+import {observable, action} from 'mobx';
 import axios from 'axios';
 
 @inject('store')
@@ -34,13 +34,11 @@ export class LoginScreen extends React.Component {
 
   constructor(props) {
     super(props);
-    this.state = { visible: false,rehabPlanID:''};
+    this.state = {visible: false, rehabPlanID: ''};
   }
 
-  
-
   render() {
-    const { visible } = this.state;
+    const {visible} = this.state;
     return (
       <SafeAreaView style={styles.app}>
         <AnimatedLoader
@@ -50,7 +48,7 @@ export class LoginScreen extends React.Component {
           animationStyle={styles.lottie}
           speed={2}
         />
-        <StatusBar barStyle="light-content"/>
+        <StatusBar barStyle="light-content" />
         <KeyboardAvoidingView behavior="padding" style={styles.app}>
           <TouchableWithoutFeedback
             style={styles.app}
@@ -103,12 +101,11 @@ export class LoginScreen extends React.Component {
   };
 
   getPatientDetails = async () => {
-
     const options = {
       method: 'GET',
       url: `${config.SERVER_URL}/patient/${
         this.props.store.userLoginDetails.id
-        }`,
+      }`,
       headers: {
         'x-auth-token': this.props.store.userLoginDetails.token,
       },
@@ -117,23 +114,24 @@ export class LoginScreen extends React.Component {
       const url = await axios(options);
       if (url.status === 200) {
         this.props.store.userDetails = url.data;
-        if (url.data.rehabPlanID != ''){
+        if (url.data.rehabPlanID != '') {
           this.getRehabPlan(url.data.rehabPlanID);
-          this.setState({ rehabPlanID: url.data.rehabPlanID });
-        }
-        else{
+          this.setState({rehabPlanID: url.data.rehabPlanID});
+        } else {
           this.props.navigation.navigate('HomeApp');
         }
       } else {
         Alert.alert('error has occured, Please try again in a few minutes');
       }
     } catch (err) {
-      Alert.alert('error has occured when trying to return Data from getPatientDetails query. please check your details');
+      Alert.alert(
+        'error has occured when trying to return Data from getPatientDetails query. please check your details',
+      );
       console.log('err', err);
     }
   };
 
-  getRehabPlan = async (rehabPlanID) => {
+  getRehabPlan = async rehabPlanID => {
     const options = {
       method: 'GET',
       url: `${config.SERVER_URL}/rehabPlan/${rehabPlanID}`,
@@ -159,12 +157,11 @@ export class LoginScreen extends React.Component {
   };
 
   login = async () => {
-
-    this.setState({ visible: true });
-    const m = 'ziperfal@gmail.com';
-    const p = '123456';
-    //const m = 'aneeman@gmail.com'
-    //const p = 'aaabbb'
+    this.setState({visible: true});
+    //const m = 'ziperfal@gmail.com';
+    //const p = '123456';
+    const m = 'aneeman@gmail.com';
+    const p = 'aaabbb';
     const options = {
       method: 'post',
       url: `${config.SERVER_URL}/auth/login`,
@@ -182,8 +179,7 @@ export class LoginScreen extends React.Component {
       if (url.status === 200) {
         this.props.store.userLoginDetails = url.data;
         this.getPatientDetails();
-      } 
-      else {
+      } else {
         Alert.alert('error has occured, Please try again in a few minutes');
       }
     } catch (err) {
@@ -194,7 +190,7 @@ export class LoginScreen extends React.Component {
     }
     this.onLoginSucsess();
 
-    this.setState({ visible: false });
+    this.setState({visible: false});
   };
 }
 
