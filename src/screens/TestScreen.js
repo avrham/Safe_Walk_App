@@ -15,8 +15,6 @@ import axios from 'axios';
 import config from '../../config.json';
 import ProgressBarAnimated from 'react-native-progress-bar-animated';
 
-
-
 @inject('store')
 @observer
 export class TestScreen extends React.Component {
@@ -26,13 +24,13 @@ export class TestScreen extends React.Component {
       rehabPlanID: '',
       progressWithOnComplete: 0,
       progressCustomized: 0,
-      maxValue:100
+      maxValue: 100,
     };
   }
 
   componentDidMount() {
     if (this.props.store.userDetails.rehabPlanID != '') {
-      this.calculateProgress() ;
+      this.calculateProgress();
     }
   }
 
@@ -95,16 +93,11 @@ export class TestScreen extends React.Component {
   };
 */
   render() {
-
     const barWidth = Dimensions.get('screen').width - 1500;
-
 
     return (
       <SafeAreaView style={styles.app}>
-        <CustomHeader
-          isTestScreen={true}
-          navigation={this.props.navigation}
-        />
+        <CustomHeader isTestScreen={true} navigation={this.props.navigation} />
         <View style={styles.background}>
           <Text style={styles.title}>
             Hey {this.props.store.userDetails.name}!
@@ -112,16 +105,20 @@ export class TestScreen extends React.Component {
           <Text style={styles.sentence}>
             Before starting, please connect your kit
           </Text>
-          <TouchableOpacity style={styles.button} onPress={this.StartTest} >
+          <TouchableOpacity style={styles.button} onPress={this.StartTest}>
             <Text style={styles.buttonText}>Start Test</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.instructionButton}
-            onPress={() => this.props.navigation.navigate('VideoDetailes')}>
-              <Text style={styles.instructionTitle}>Press to instruction</Text>
+            onPress={() => this.props.navigation.navigate('Description')}>
+            <Text style={styles.instructionTitle}>Press to instruction</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.ProgressBarAnimated} onPress={() => this.props.navigation.navigate('RehabPlan')}>
-            <Text style={styles.label}>{`You've made ${this.props.store.rehabProgress}% progress`} </Text>
+          <TouchableOpacity
+            style={styles.ProgressBarAnimated}
+            onPress={() => this.props.navigation.navigate('RehabPlan')}>
+            <Text style={styles.label}>
+              {`You've made ${this.props.store.rehabProgress}% progress`}{' '}
+            </Text>
             <ProgressBarAnimated
               width={300}
               maxValue={100}
@@ -280,10 +277,9 @@ export class TestScreen extends React.Component {
 }
 
 const styles = StyleSheet.create({
-
   lottie: {
-    width:100,
-    height:100
+    width: 100,
+    height: 100,
   },
 
   background: {
@@ -315,8 +311,8 @@ const styles = StyleSheet.create({
     top: 200,
     alignItems: 'center',
     justifyContent: 'center',
-    borderWidth:2,
-    borderColor:"#C9BDBD"
+    borderWidth: 2,
+    borderColor: '#C9BDBD',
   },
 
   buttonText: {
@@ -331,15 +327,15 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: '#5D8B91',
     borderRadius: 5,
-    width:200,
-    height:42,
+    width: 200,
+    height: 42,
     alignItems: 'center',
   },
 
   instructionTitle: {
     fontSize: 20,
     fontFamily: 'Lato-Regular',
-    color: '#FAFAFA'
+    color: '#FAFAFA',
   },
 
   app: {
@@ -352,18 +348,17 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '500',
     marginBottom: 10,
-    textAlign:'center',
+    textAlign: 'center',
     fontFamily: 'Lato-Regular',
-
   },
 
-  ProgressBarAnimated:{
-    flex:1,
+  ProgressBarAnimated: {
+    flex: 1,
     marginTop: 350,
-    borderColor:'black',
-    borderWidth:2,
-    borderColor:"#C9BDBD",
-    padding:10
-
-  }
+    borderColor: 'black',
+    borderWidth: 2,
+    borderColor: '#C9BDBD',
+    padding: 10,
+    borderRadius: 5,
+  },
 });

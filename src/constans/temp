@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
   FlatList,
   Image,
-  StatusBar,
+  StatusBar
 } from 'react-native';
 import {StyleSheet} from 'react-native';
 import {WebView} from 'react-native-webview';
@@ -42,37 +42,59 @@ export class RehabilitionScreen extends React.Component {
   checkIfRehabPlanExsist = () => {
     if (this.props.store.userDetails.rehabPlanID != '') {
       this.setState({RehabPlanExsist: true});
+
       this.getVidoId();
     }
   };
 
-  getVidoId = () => {
+  getVidoId = async () => {
     this.setState({visible: true});
-    const length = this.props.store.RehabPlan.videos.length;
-    let i = 0;
-    while (i < length) {
-      const temp = this.props.store.RehabPlan.videos[i].videoID;
+    const options = {
+      method: 'GET',
+      url: `${config.SERVER_URL}/rehabPlan/${
+        this.props.store.userDetails.rehabPlanID
+      }`,
+      headers: {
+        'x-auth-token': this.props.store.userLoginDetails.token,
+      },
+    };
 
-      this.state.videoStatus.push({
-        id: this.props.store.RehabPlan.videos[i].videoID,
-        status: this.props.store.RehabPlan.videos[i].done,
-        times: this.props.store.RehabPlan.videos[i].times,
-      });
+    try {
+      const url = await axios(options);
+      console.log(url);
+      if (url.status === 200) {
+        const length = url.data.videos.length;
+        let i = 0;
+        while (i < length) {
+          const temp = url.data.videos[i].videoID;
 
-      if (i < length - 1) {
-        this.setState(prevState => ({
-          videoIds: prevState.videoIds.concat(`${temp},`),
-        }));
+          this.state.videoStatus.push({
+            id: url.data.videos[i].videoID,
+            status: url.data.videos[i].done,
+          });
+
+          if (i < length - 1) {
+            this.setState(prevState => ({
+              videoIds: prevState.videoIds.concat(`${temp},`),
+            }));
+          } else {
+            this.setState(prevState => ({
+              videoIds: prevState.videoIds.concat(temp),
+            }));
+          }
+          i++;
+        }
+
+        this.getVideoDetails();
       } else {
-        this.setState(prevState => ({
-          videoIds: prevState.videoIds.concat(temp),
-        }));
+        Alert.alert('error has occured, Please try again in a few minutes');
       }
-      i++;
+    } catch (err) {
+      alert(
+        'error has occured when trying to return Data. please check your details',
+      );
+      console.log('err', err);
     }
-
-    this.getVideoDetails();
-
     this.setState({visible: false});
   };
 
@@ -84,6 +106,7 @@ export class RehabilitionScreen extends React.Component {
         'x-auth-token': this.props.store.userLoginDetails.token,
       },
     };
+
     try {
       const url = await axios(options);
       if (url.status === 200) {
@@ -110,8 +133,12 @@ export class RehabilitionScreen extends React.Component {
 
     return (
       <SafeAreaView style={styles.rehabView}>
-        <StatusBar barStyle="dark-content" />
-        <CustomHeader isRehabScreen={true} navigation={this.props.navigation} />
+        <StatusBar barStyle="dark-content"/>
+        <CustomHeader
+          title="Rehabilition"
+          isRehabScreen={true}
+          navigation={this.props.navigation}
+        />
         {this.state.RehabPlanExsist && (
           <View>
             <AnimatedLoader
@@ -121,7 +148,6 @@ export class RehabilitionScreen extends React.Component {
               animationStyle={styles.lottie}
               speed={1}
             />
-            <Text>{this.props.store.RehabPlan.instructions}</Text>
             <FlatList
               data={this.state.mergeArray}
               renderItem={({item}) => (
@@ -148,8 +174,7 @@ export class RehabilitionScreen extends React.Component {
                 The system does not yet have a Rehabilitation program
               </Text>
               <Text style={styles.message}>
-                If you made test already, Your program will appear as soon as
-                possible
+                If you made test already, Your program will appear as soon as possible
               </Text>
             </View>
           </SafeAreaView>
