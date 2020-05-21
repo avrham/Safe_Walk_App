@@ -18,19 +18,15 @@ import {IMAGE} from '../constans/Image';
 import mergeByKey from 'array-merge-by-key';
 import AnimatedLoader from 'react-native-animated-loader';
 import {ListItem} from 'react-native-elements';
-import TouchableScale from 'react-native-touchable-scale';
+import TouchableScale from 'react-native-touchable-scale'; 
 import LinearGradient from 'react-native-linear-gradient';
 
-function Item({title}) {
-  return (
-    <View style={styles.item}>
-      <Text style={styles.title}>{title}</Text>
-    </View>
-  );
-}
+
+ 
 @inject('store')
 @observer
 export class RehabilitionScreen extends React.Component {
+
   constructor(props) {
     super(props);
     this.state = {
@@ -45,7 +41,7 @@ export class RehabilitionScreen extends React.Component {
     };
   }
 
-  componentDidMount() {
+componentDidMount() {
     this.checkIfRehabPlanExsist();
   }
 
@@ -53,22 +49,23 @@ export class RehabilitionScreen extends React.Component {
     if (this.props.store.userDetails.rehabPlanID != '') {
       this.setState({RehabPlanExsist: true});
       this.getVidoId();
+      
     }
   };
 
+   
+
   getVidoId = () => {
-    this.setState({visible: true});
+    //this.setState({visible: true});
     const length = this.props.store.RehabPlan.videos.length;
     let i = 0;
     while (i < length) {
       const temp = this.props.store.RehabPlan.videos[i].videoID;
-
       this.state.videoStatus.push({
         id: this.props.store.RehabPlan.videos[i].videoID,
         status: this.props.store.RehabPlan.videos[i].done,
         times: this.props.store.RehabPlan.videos[i].times,
       });
-
       if (i < length - 1) {
         this.setState(prevState => ({
           videoIds: prevState.videoIds.concat(`${temp},`),
@@ -80,24 +77,37 @@ export class RehabilitionScreen extends React.Component {
       }
       i++;
     }
-
+   
     this.getVideoDetails();
 
-    this.setState({visible: false});
+    //this.setState({visible: false});
   };
 
-  getVideoDetails = async () => {
-    const options = {
-      method: 'GET',
-      url: `${config.SERVER_URL}/video?videoIDs=${this.state.videoIds}`,
-      headers: {
-        'x-auth-token': this.props.store.userLoginDetails.token,
-      },
-    };
+  getVideoDetails =  async () => {
+    if(this.props.store.RehabPlan.videos.length===1){
+      const options = {
+        method: 'GET',
+        url: `${config.SERVER_URL}/video?videoIDs=${this.props.store.RehabPlan.videos[0].videoID}`,
+        headers: {
+          'x-auth-token': this.props.store.userLoginDetails.token,
+        },
+      }
+    }
+    else{
+      const options = {
+        method: 'GET',
+        url: `${config.SERVER_URL}/video?videoIDs=${this.state.videoIds}`,
+        headers: {
+          'x-auth-token': this.props.store.userLoginDetails.token,
+        },
+      };
+    }
+    
     try {
-      const url = await axios(options);
+      const url =  await axios(options);
       if (url.status === 200) {
         this.setState({Rehab_Plan: url.data});
+        console.log(url.data)
       } else {
         Alert.alert('error has occured, Please try again in a few minutes');
       }
@@ -113,20 +123,24 @@ export class RehabilitionScreen extends React.Component {
       this.state.videoStatus,
     );
     this.setState({mergeArray: MergeArray});
+    console.log(this.state.mergeArray)
+    
   };
 
   renderItem = ({item}) => (
-    <ListItem
+    item.times === 0 ?(
+      <ListItem
       Component={TouchableScale}
       friction={90} //
       tension={100} // These props are passed to the parent component (here TouchableScale)
-      activeScale={0.95} //
-      linearGradientProps={{
+      activeScale={0.95}
+      linearGradientProps={
+        {
         colors: ['#FF9800', '#F44336'],
-        start: {x: 1, y: 0},
-        end: {x: 0.2, y: 0},
+        start: { x: 1, y: 0 },
+        end: { x: 0.2, y: 0 },
       }}
-      ViewComponent={LinearGradient} // Only if no expo
+      ViewComponent={LinearGradient}
       leftAvatar={{
         rounded: true,
         source: {
@@ -134,12 +148,15 @@ export class RehabilitionScreen extends React.Component {
             'https://lh3.googleusercontent.com/proxy/UHQt0tb2uK9WD-_Q3a1o3xWv-t--v00m4EsdhrgupTjiyjcj_yDF71gX3eTavJp94G32kpJKb7VdF1_Z4T37BTstEZp_qVoTeCkFJe8sJGLJenoAi0zu_prYek2Ucan640k9648GbKbvUrBLE_4V0MI8ki0bELci2LX5Kh6Ev4gdbt0BgSSn8GUtJGISZAjea333bQolJYVmtyIZIlfrCITB-3TIoFXy2hKBsncMx-jwlotUZ9YOyGJ7fJpGTFT0bVVKy4w6-rrxcqKX2B4q_kukL4kfcN2dPkkiaXRx0J6u9352VbCtf8Kz3Udo9S4vNzPdyHRpufTdnjhCN6AB71FDnA',
         },
       }}
-      title="Chris Jackson"
+      title={item.name}
       titleStyle={{color: 'white', fontWeight: 'bold'}}
       subtitleStyle={{color: 'white'}}
-      subtitle="Vice Chairman"
+      subtitle={`you have more ${item.times} times to compleate this part!`}
       chevron={{color: 'white'}}
+     
     />
+    ):<Text>vvv</Text>
+
   );
 
   render() {

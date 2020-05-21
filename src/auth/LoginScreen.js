@@ -139,11 +139,11 @@ export class LoginScreen extends React.Component {
         'x-auth-token': this.props.store.userLoginDetails.token,
       },
     };
-
     try {
       const url = await axios(options);
       if (url.status === 200) {
         this.props.store.RehabPlan = url.data;
+        console.log(url.data)
         this.props.navigation.navigate('HomeApp');
       } else {
         Alert.alert('error has occured, Please try again in a few minutes');
