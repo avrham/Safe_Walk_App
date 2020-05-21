@@ -13,6 +13,7 @@ export class TestProcessScreen extends React.Component {
       isPart3: false,
       thereIsAProblem: false,
       thereIsntProblem: false,
+      testProcess: true,
     };
   }
 
@@ -27,7 +28,7 @@ export class TestProcessScreen extends React.Component {
     }, 15000);
     this.timeoutHandle = setTimeout(() => {
       // Add your logic for the transition
-      this.setState({isPart3: false, thereIsAProblem: true});
+      this.setState({isPart3: false, thereIsAProblem: true,testProcess:false});
     }, 20000);
     this.timeoutHandle = setTimeout(() => {
       // Add your logic for the transition
@@ -37,9 +38,18 @@ export class TestProcessScreen extends React.Component {
   render() {
     return (
       <SafeAreaView style={{flex: 1, backgroundColor: 'rgb(32,53,70)'}}>
-        <CustomHeader title="Test Process" navigation={this.props.navigation} />
+        <CustomHeader
+          isTestProcess={this.state.testProcess}
+          navigation={this.props.navigation}
+        />
 
-        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#C9BDBD'}}>
+        <View
+          style={{
+            flex: 1,
+            justifyContent: 'center',
+            alignItems: 'center',
+            backgroundColor: '#C9BDBD',
+          }}>
           {this.state.isPart1 && (
             <Text style={styles.message}>
               Please stand and don't move for 5 seconds !

@@ -353,7 +353,6 @@ const styles = StyleSheet.create({
   },
 
   ProgressBarAnimated: {
-    flex: 1,
     marginTop: 350,
     borderColor: 'black',
     borderWidth: 2,

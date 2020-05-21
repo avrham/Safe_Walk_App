@@ -56,7 +56,6 @@ export class LoginScreen extends React.Component {
             <View style={styles.logoContainer}>
               <View style={styles.logoContainer}>
                 <Image source={IMAGE.ICON_LOGO} style={styles.logo} />
-                <Text style={styles.title}>Account Information</Text>
               </View>
 
               <View style={styles.infoContainer}>
@@ -143,8 +142,11 @@ export class LoginScreen extends React.Component {
       const url = await axios(options);
       if (url.status === 200) {
         this.props.store.RehabPlan = url.data;
-        console.log(url.data)
-        this.props.navigation.navigate('HomeApp');
+        console.log(url.data);
+        setTimeout(() => {
+          this.setState({visible: false});
+          this.props.navigation.navigate('HomeApp');
+        }, 1500);
       } else {
         Alert.alert('error has occured, Please try again in a few minutes');
       }
@@ -158,10 +160,10 @@ export class LoginScreen extends React.Component {
 
   login = async () => {
     this.setState({visible: true});
-    //const m = 'ziperfal@gmail.com';
-    //const p = '123456';
-    const m = 'aneeman@gmail.com';
-    const p = 'aaabbb';
+    const m = 'ziperfal@gmail.com';
+    const p = '123456';
+    //const m = 'aneeman@gmail.com';
+    // const p = 'aaabbb';
     const options = {
       method: 'post',
       url: `${config.SERVER_URL}/auth/login`,
@@ -189,8 +191,6 @@ export class LoginScreen extends React.Component {
       console.log('err', err);
     }
     this.onLoginSucsess();
-
-    this.setState({visible: false});
   };
 }
 
