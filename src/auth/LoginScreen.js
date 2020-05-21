@@ -21,6 +21,8 @@ import config from '../../config.json';
 import {observer, inject} from 'mobx-react';
 import {observable, action} from 'mobx';
 import axios from 'axios';
+import Icon from 'react-native-vector-icons/FontAwesome';
+import { Input } from 'react-native-elements';
 
 @inject('store')
 @observer

@@ -3,13 +3,11 @@ import {
   Text,
   View,
   SafeAreaView,
-  TouchableOpacity,
   FlatList,
   Image,
   StatusBar,
 } from 'react-native';
 import {StyleSheet} from 'react-native';
-import {WebView} from 'react-native-webview';
 import {CustomHeader} from '../export';
 import config from '../../config.json';
 import {observer, inject} from 'mobx-react';
@@ -141,13 +139,13 @@ export class RehabilitionScreen extends React.Component {
           rounded: true,
           source: {
             uri:
-              'https://lh3.googleusercontent.com/proxy/UHQt0tb2uK9WD-_Q3a1o3xWv-t--v00m4EsdhrgupTjiyjcj_yDF71gX3eTavJp94G32kpJKb7VdF1_Z4T37BTstEZp_qVoTeCkFJe8sJGLJenoAi0zu_prYek2Ucan640k9648GbKbvUrBLE_4V0MI8ki0bELci2LX5Kh6Ev4gdbt0BgSSn8GUtJGISZAjea333bQolJYVmtyIZIlfrCITB-3TIoFXy2hKBsncMx-jwlotUZ9YOyGJ7fJpGTFT0bVVKy4w6-rrxcqKX2B4q_kukL4kfcN2dPkkiaXRx0J6u9352VbCtf8Kz3Udo9S4vNzPdyHRpufTdnjhCN6AB71FDnA',
+              'https://c.static-nike.com/a/images/f_auto/dpr_1.0/h_700,c_limit/285d7865-7d0a-4b91-9267-56f5f85004d7/nike-training-club-app-home-workouts-more.jpg',
           },
         }}
         title={item.name}
         titleStyle={{color: 'white', fontWeight: 'bold'}}
         subtitleStyle={{color: 'white'}}
-        subtitle={`you have more ${item.times} times to compleate this part!`}
+        subtitle={`you have ${item.times} more times to compleate this part!`}
         chevron={{color: 'white'}}
       />
     ) : (
@@ -175,7 +173,7 @@ export class RehabilitionScreen extends React.Component {
           rounded: true,
           source: {
             uri:
-              'https://lh3.googleusercontent.com/proxy/UHQt0tb2uK9WD-_Q3a1o3xWv-t--v00m4EsdhrgupTjiyjcj_yDF71gX3eTavJp94G32kpJKb7VdF1_Z4T37BTstEZp_qVoTeCkFJe8sJGLJenoAi0zu_prYek2Ucan640k9648GbKbvUrBLE_4V0MI8ki0bELci2LX5Kh6Ev4gdbt0BgSSn8GUtJGISZAjea333bQolJYVmtyIZIlfrCITB-3TIoFXy2hKBsncMx-jwlotUZ9YOyGJ7fJpGTFT0bVVKy4w6-rrxcqKX2B4q_kukL4kfcN2dPkkiaXRx0J6u9352VbCtf8Kz3Udo9S4vNzPdyHRpufTdnjhCN6AB71FDnA',
+              'https://c.static-nike.com/a/images/f_auto/dpr_1.0/h_700,c_limit/285d7865-7d0a-4b91-9267-56f5f85004d7/nike-training-club-app-home-workouts-more.jpg',
           },
         }}
         title={item.name}

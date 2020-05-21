@@ -14,7 +14,7 @@ import {
   NotificationsScreen,
   CustomHeader,
   CustomDrawerContent,
-  VideoDetailesScreen
+  VideoDetailesScreen,
 } from './src/export';
 
 import {IMAGE} from './src/constans/Image';
@@ -76,7 +76,7 @@ function TabNavigator() {
   return (
     <Tab.Navigator>
       <Tab.Screen name="Test" component={TestStack} />
-      <Tab.Screen name="Rehab Plan" component={RehabPlanStack} />
+      <Tab.Screen name="RehabPlan" component={RehabPlanStack} />
     </Tab.Navigator>
   );
 }

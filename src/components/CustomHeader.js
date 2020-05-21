@@ -29,7 +29,7 @@ export class CustomHeader extends React.Component {
           height: 100,
           borderBottomColor: '#5D8B91',
           borderBottomWidth: 1,
-          backgroundColor: '#C9BDBD',
+          
         }}>
         <StatusBar color="#C9BDBD" />
         {(isTestScreen || isRehabScreen) && (

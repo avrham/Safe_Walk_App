@@ -24,7 +24,6 @@ export class NotificationsScreen extends React.Component {
           <Text>{this.firemas}</Text>
           <TextInput
             style={{
-              
               paddingLeft: 10,
               marginTop: 20,
             }}
