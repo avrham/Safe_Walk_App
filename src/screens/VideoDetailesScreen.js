@@ -106,7 +106,7 @@ export class VideoDetailesScreen extends React.Component {
                   </Text>
                 </View>
               </View>
-              <View style={{paddingHorizontal: 14, marginTop: 20}}>
+              <View style={{paddingHorizontal: 14, top: 20}}>
                 <Text style={{color: 'black', opacity: 0.8, lineHeight: 20}}>
                   To finish this mision yon need to watch this movie and press
                   the button when you done!
@@ -114,7 +114,7 @@ export class VideoDetailesScreen extends React.Component {
               </View>
               <View style={styles.ButtonContainer}>
                 <Button
-                  title="Executed"
+                  title="Done"
                   ViewComponent={LinearGradient} // Don't forget this!
                   linearGradientProps={{
                     colors: ['#48A1A7', '#203546'],
@@ -138,10 +138,7 @@ export class VideoDetailesScreen extends React.Component {
               </View>
               <View style={styles.ButtonContainer}>
                 <Button
-                  icon={
-                    <Icon name="checkmark-outline" size={15} color="white" />
-                  }
-                  title="Done"
+                  title="Mission Complete"
                   ViewComponent={LinearGradient} // Don't forget this!
                   linearGradientProps={{
                     colors: ['#6EAF50', '#294B19'],
@@ -185,11 +182,10 @@ const styles = StyleSheet.create({
   },
   videoInfo: {
     flexDirection: 'row',
-    marginTop: 16,
+    top: 16,
     justifyContent: 'space-between',
     width: Dimensions.get('window').width - 14,
   },
-
   videoTitle: {
     paddingLeft: 14,
     color: 'black',
@@ -205,7 +201,7 @@ const styles = StyleSheet.create({
     opacity: 0.8,
   },
   ProgressBarAnimated: {
-    marginTop: 20,
+    top: 270,
     alignItems: 'center',
   },
   label: {
@@ -217,7 +213,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Lato-Regular',
   },
   ButtonContainer: {
-    marginTop: 200,
+    top: 260,
     alignItems: 'center',
   },
   Button: {

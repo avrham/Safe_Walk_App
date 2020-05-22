@@ -29,10 +29,9 @@ export class CustomHeader extends React.Component {
           height: 100,
           borderBottomColor: '#5D8B91',
           borderBottomWidth: 1,
-          
         }}>
         <StatusBar color="#C9BDBD" />
-        {(isTestScreen || isRehabScreen) && (
+        {(isTestScreen || isRehabScreen || !isTestProcess) && (
           <TouchableOpacity
             style={{flex: 1, flexDirection: 'row', alignItems: 'center'}}
             onPress={() => this.props.navigation.navigate('Test')}>
@@ -58,7 +57,7 @@ export class CustomHeader extends React.Component {
           )}
           {!isRehabScreen && !isTestScreen && !isTestProcess && (
             <TouchableOpacity
-              style={{left: 30, flexDirection: 'row', alignItems: 'center'}}
+              style={{flexDirection: 'row', alignItems: 'center'}}
               onPress={() => navigation.goBack()}>
               <Image
                 style={{width: 25, height: 25}}
@@ -69,16 +68,11 @@ export class CustomHeader extends React.Component {
             </TouchableOpacity>
           )}
           {isTestProcess && (
-            <TouchableOpacity
-              style={{left: 30, flexDirection: 'row', alignItems: 'center'}}
-              onPress={() => navigation.goBack()}
-              disabled={true}>
+            <TouchableOpacity style={{}}>
               <Image
-                style={{width: 25, height: 25}}
-                source={IMAGE.ICON_RETURN}
-                resizeMode="contain"
+                style={{marginLeft: 173, width: 125, height: 49}}
+                source={IMAGE.ICON_LOGO}
               />
-              <Text style={{color: '#5D8B91'}}>Back</Text>
             </TouchableOpacity>
           )}
         </SafeAreaView>

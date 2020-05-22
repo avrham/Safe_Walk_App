@@ -6,6 +6,7 @@ import {
   FlatList,
   Image,
   StatusBar,
+  Dimensions,
 } from 'react-native';
 import {StyleSheet} from 'react-native';
 import {CustomHeader} from '../export';
@@ -147,6 +148,7 @@ export class RehabilitionScreen extends React.Component {
         subtitleStyle={{color: 'white'}}
         subtitle={`you have ${item.times} more times to compleate this part!`}
         chevron={{color: 'white'}}
+        style={{height: 100}}
       />
     ) : (
       <ListItem
@@ -193,7 +195,7 @@ export class RehabilitionScreen extends React.Component {
         <CustomHeader isRehabScreen={true} navigation={this.props.navigation} />
         <View style={styles.background}>
           {this.state.RehabPlanExsist && (
-            <View>
+            <View style={styles.listContainer}>
               <AnimatedLoader
                 visible={visible}
                 overlayColor="rgba(255,255,255,0.75)"
@@ -201,15 +203,31 @@ export class RehabilitionScreen extends React.Component {
                 animationStyle={styles.lottie}
                 speed={1}
               />
-              <Text style={styles.descriptionTitle}>
-                {this.props.store.RehabPlan.instructions}
-              </Text>
-              <FlatList
-                data={this.state.mergeArray}
-                renderItem={this.renderItem}
-                ItemSeparatorComponent={this.FlatListItemSeparator}
-                style={styles.FlatList}
-              />
+              <View style={{}}>
+                <Text style={styles.descriptionTitle}>
+                  {this.props.store.RehabPlan.instructions}
+                </Text>
+              </View>
+              <View style={{width: Dimensions.get('window').width - 14}}>
+                <FlatList
+                  data={this.state.mergeArray}
+                  renderItem={this.renderItem}
+                  ItemSeparatorComponent={this.FlatListItemSeparator}
+                  style={styles.FlatList}
+                />
+              </View>
+              <View style={styles.ProgressBarAnimated}>
+                <Text style={styles.label}>
+                  {`You've made ${this.props.store.rehabProgress}% progress`}
+                </Text>
+                <ProgressBarAnimated
+                  width={300}
+                  maxValue={100}
+                  value={this.props.store.rehabProgress}
+                  backgroundColorOnComplete="#6CC644"
+                  backgroundColor="#C9BDBD"
+                />
+              </View>
             </View>
           )}
           {!this.state.RehabPlanExsist && (
@@ -230,18 +248,6 @@ export class RehabilitionScreen extends React.Component {
               </View>
             </SafeAreaView>
           )}
-          <View style={styles.ProgressBarAnimated}>
-            <Text style={styles.label}>
-              {`You've made ${this.props.store.rehabProgress}% progress`}{' '}
-            </Text>
-            <ProgressBarAnimated
-              width={300}
-              maxValue={100}
-              value={this.props.store.rehabProgress}
-              backgroundColorOnComplete="#6CC644"
-              backgroundColor="#C9BDBD"
-            />
-          </View>
         </View>
       </SafeAreaView>
     );
@@ -298,7 +304,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(255,255,255,0.5)',
   },
   ProgressBarAnimated: {
-    top: -50,
+    top: 50,
   },
   label: {
     color: '#999',
@@ -307,6 +313,9 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     textAlign: 'center',
     fontFamily: 'Lato-Regular',
+  },
+  listContainer: {
+    height: 600,
   },
 });
 //onPress={() => this.props.navigation.navigate('TestProcess')}

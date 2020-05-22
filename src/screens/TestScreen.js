@@ -340,7 +340,6 @@ const styles = StyleSheet.create({
 
   app: {
     flex: 1,
-    backgroundColor: 'rgb(32,53,70)',
   },
 
   label: {

@@ -22,7 +22,7 @@ import {observer, inject} from 'mobx-react';
 import {observable, action} from 'mobx';
 import axios from 'axios';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import { Input } from 'react-native-elements';
+import {Input} from 'react-native-elements';
 
 @inject('store')
 @observer
@@ -119,7 +119,10 @@ export class LoginScreen extends React.Component {
           this.getRehabPlan(url.data.rehabPlanID);
           this.setState({rehabPlanID: url.data.rehabPlanID});
         } else {
-          this.props.navigation.navigate('HomeApp');
+          setTimeout(() => {
+            this.setState({visible: false});
+            this.props.navigation.navigate('HomeApp');
+          }, 1500);
         }
       } else {
         Alert.alert('error has occured, Please try again in a few minutes');
@@ -162,10 +165,10 @@ export class LoginScreen extends React.Component {
 
   login = async () => {
     this.setState({visible: true});
-    const m = 'ziperfal@gmail.com';
-    const p = '123456';
-    //const m = 'aneeman@gmail.com';
-    // const p = 'aaabbb';
+    //const m = 'ziperfal@gmail.com';
+    //const p = '123456';
+    const m = 'aneeman@gmail.com';
+    const p = 'aaabbb';
     const options = {
       method: 'post',
       url: `${config.SERVER_URL}/auth/login`,
