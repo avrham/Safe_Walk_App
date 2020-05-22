@@ -11,7 +11,6 @@ import {StyleSheet} from 'react-native';
 import {IMAGE} from './constans/Image';
 import {observer, inject} from 'mobx-react';
 import {observable} from 'mobx';
-import { Header } from '@react-navigation/stack';
 
 @inject('store')
 @observer
@@ -37,13 +36,6 @@ export class CustomDrawerContent extends React.Component {
   }
   render() {
     return (
-      <Container>
-        <Header>
-          <Body>
-            
-          </Body>
-        </Header>
-      </Container>
       <View style={styles.sideMenuContainer}>
         <Image
           source={{uri: this.props.store.userDetails.picture}}
