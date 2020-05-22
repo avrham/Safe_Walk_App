@@ -14,26 +14,21 @@ export class TestProcessScreen extends React.Component {
       thereIsAProblem: false,
       thereIsntProblem: false,
       testProcess: true,
+      visible: false,
     };
   }
 
   componentDidMount() {
     this.timeoutHandle = setTimeout(() => {
-      // Add your logic for the transition
       this.setState({isPart1: false, isPart2: true});
-    }, 5000);
+    }, 3000);
     this.timeoutHandle = setTimeout(() => {
-      // Add your logic for the transition
-      this.setState({isPart2: false, isPart3: true});
+      this.setState({isPart2: false});
+      while (this.props.store.abnormality != '') {
+        this.setState({visible: true});
+      }
+      this.setState({visible: false});
     }, 15000);
-    this.timeoutHandle = setTimeout(() => {
-      // Add your logic for the transition
-      this.setState({isPart3: false, thereIsAProblem: true,testProcess:false});
-    }, 20000);
-    this.timeoutHandle = setTimeout(() => {
-      // Add your logic for the transition
-      this.setState({thereIsAProblem: false, thereIsntProblem: true});
-    }, 25000);
   }
   render() {
     return (
@@ -42,7 +37,6 @@ export class TestProcessScreen extends React.Component {
           isTestProcess={this.state.testProcess}
           navigation={this.props.navigation}
         />
-
         <View
           style={{
             flex: 1,
@@ -60,12 +54,7 @@ export class TestProcessScreen extends React.Component {
               Pleast start walking in a straight line for 60 seconds !
             </Text>
           )}
-          {this.state.isPart3 && (
-            <Text style={styles.message}>
-              Please stop walking and stand in tour position for 5 seconds !
-            </Text>
-          )}
-          {this.state.thereIsAProblem && (
+          {this.props.store.abnormality && (
             <SafeAreaView style={styles.SafeAreaAlert}>
               <View style={styles.viewAlert}>
                 <Image
@@ -85,7 +74,7 @@ export class TestProcessScreen extends React.Component {
               </View>
             </SafeAreaView>
           )}
-          {this.state.thereIsntProblem && (
+          {!this.props.store.abnormality && (
             <SafeAreaView style={styles.SafeAreaAlert}>
               <View style={styles.viewAlert}>
                 <Image
