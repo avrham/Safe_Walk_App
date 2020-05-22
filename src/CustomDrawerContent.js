@@ -11,6 +11,7 @@ import {StyleSheet} from 'react-native';
 import {IMAGE} from './constans/Image';
 import {observer, inject} from 'mobx-react';
 import {observable} from 'mobx';
+import { Header } from '@react-navigation/stack';
 
 @inject('store')
 @observer
@@ -36,6 +37,13 @@ export class CustomDrawerContent extends React.Component {
   }
   render() {
     return (
+      <Container>
+        <Header>
+          <Body>
+            
+          </Body>
+        </Header>
+      </Container>
       <View style={styles.sideMenuContainer}>
         <Image
           source={{uri: this.props.store.userDetails.picture}}
@@ -62,7 +70,7 @@ export class CustomDrawerContent extends React.Component {
               <View style={{marginRight: 10, marginLeft: 20}} />
               <Text
                 style={{
-                  fontSize: 15,
+                  fontSize: 20,
                 }}
                 onPress={() => {
                   this.props.navigation.navigate(item.screenToNavigate);
@@ -98,8 +106,8 @@ const styles = StyleSheet.create({
   sideMenuProfileIcon: {
     top: 20,
     alignSelf: 'center',
-    height: 150,
-    width: 150,
+    height: 100,
+    width: 100,
     borderWidth: 1,
     borderRadius: 75,
   },
