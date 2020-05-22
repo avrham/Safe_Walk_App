@@ -3,8 +3,7 @@ import {
   Text,
   View,
   SafeAreaView,
-  TouchableOpacity,
-  Dimensions
+  TouchableOpacity
 } from 'react-native';
 import { StyleSheet } from 'react-native';
 import { CustomHeader } from '../export';
@@ -50,56 +49,6 @@ export class TestScreen extends React.Component {
     );
     this.props.store.timesOfAllVideo = timesOfVideo;
   };
-
-  /*getPatientDetails = async () => {
-    const options = {
-      method: 'GET',
-      url: `${config.SERVER_URL}/patient/${
-        this.props.store.userLoginDetails.id
-      }`,
-      headers: {
-        'x-auth-token': this.props.store.userLoginDetails.token,
-      },
-    };
-    try {
-      const url = await axios(options);
-      if (url.status === 200) {
-        this.props.store.userDetails = url.data;
-        this.setState({rehabPlanID: url.data.rehabPlanID});
-      } else {
-        Alert.alert('error has occured, Please try again in a few minutes');
-      }
-    } catch (err) {
-      Alert.alert('error has occured... please check your details');
-      console.log('err', err);
-    }
-  };
-
-  getRehabPlan = async props => {
-
-    const options = {
-      method: 'GET',
-      url: `${config.SERVER_URL}/rehabPlan/${this.state.rehabPlanID}`,
-      headers: {
-        'x-auth-token': this.props.store.userLoginDetails.token,
-      },
-    };
-
-    try {
-      const url = await axios(options);
-      if (url.status === 200) {
-        this.props.store.RehabPlan = url.data;
-      } else {
-        Alert.alert('error has occured, Please try again in a few minutes');
-      }
-    } catch (err) {
-      alert(
-        'error has occured when trying to return Data. please check your details',
-      );
-      console.log('err', err);
-    }
-  };
-*/
 
   getKitDetails(token) {
     return new Promise(async (resolve, reject) => {
@@ -257,11 +206,10 @@ export class TestScreen extends React.Component {
       await this.updatePatient(token, this.props.store.userDetails.id, waitingStatus);
       this.props.store.abnormality = abnormality;
     } catch (err) {
-      console.log('in catch');
       this.props.store.errorOccured = true;
-      this.props.navigation.goBack();
       alert(err.message);
-      this.removeTest(token, testID);
+      this.props.navigation.goBack();
+      await this.removeTest(token, testID);
     }
   };
 

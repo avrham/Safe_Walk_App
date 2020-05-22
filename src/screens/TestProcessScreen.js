@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, View, SafeAreaView, Image, BackHandler } from 'react-native';
+import { Text, View, SafeAreaView, Image } from 'react-native';
 import { StyleSheet } from 'react-native';
 import { CustomHeader } from '../export';
 import { IMAGE } from '../constans/Image';
@@ -21,35 +21,28 @@ export class TestProcessScreen extends React.Component {
   }
 
   componentDidMount() {
-    // setTimeout(() => {
-    //   this.setState({ shouldStand: false, shouldWalk: true });
-    //   setTimeout(() => {
-    //     const abnormality = this.props.store.abnormality;
-    //     this.setState({ visible: true });
-    //     this.setState({ shouldWalk: false });
-    //     while (abnormality === '' && !this.props.store.errorOccured);
-    //     this.setState({ visible: false });
-
-
-
-    //   }, 12000);
-    // }, 3000);
-
-
-    // setTimeout(() => {
-    //   while (this.props.store.abnormality === '' && !this.props.store.errorOccured);
-    //   if (this.props.store.abnormality === true && !this.props.store.errorOccured)
-    //     this.setState({ thereIsAProblem: true });
-    //   if (this.props.store.abnormality === false && !this.props.store.errorOccured)
-    //     this.setState({ thereIsntProblem: true });
-    //   this.setState({ visible: false });
-    // }, 15000);
+    setTimeout(() => {
+      this.setState({ shouldStand: false, shouldWalk: true });
+      setTimeout(() => {
+        let abnormality = this.props.store.abnormality;
+        let errorOccured = this.props.store.errorOccured;
+        this.setState({ visible: true });
+        this.setState({ shouldWalk: false });
+        while (abnormality === '' && !errorOccured) {
+          abnormality = this.props.store.abnormality;
+          errorOccured = this.props.store.errorOccured
+        }
+        if (abnormality === true && !errorOccured)
+          this.setState({ failureObserved: true });
+        else if (abnormality === false && !errorOccured)
+          this.setState({ failureObserved: false });
+      }, 12000);
+    }, 3000);
   }
 
   render() {
     const { visible } = this.state;
-    if (this.props.store.errorOccured)
-      this.props.navigation.goBack();
+    const abnormality = this.props.store.abnormality;
     return (
       <SafeAreaView style={{ flex: 1, backgroundColor: 'rgb(32,53,70)' }}>
         <CustomHeader
@@ -70,17 +63,17 @@ export class TestProcessScreen extends React.Component {
             alignItems: 'center',
             backgroundColor: '#C9BDBD',
           }}>
-          {this.state.isPart1 && (
+          {this.state.shouldStand && (
             <Text style={styles.message}>
-              Please stand and don't move for 5 seconds !
+              Please stand in place for 3 seconds
             </Text>
           )}
-          {this.state.isPart2 && (
+          {this.state.shouldWalk && (
             <Text style={styles.message}>
-              Pleast start walking in a straight line for 60 seconds !
+              Pleast start walking in a straight line for 15 seconds
             </Text>
           )}
-          {this.state.thereIsAProblem && (
+          {this.state.failureObserved && abnormality ?
             <SafeAreaView style={styles.SafeAreaAlert}>
               <View style={styles.viewAlert}>
                 <Image
@@ -99,8 +92,8 @@ export class TestProcessScreen extends React.Component {
                 </Text>
               </View>
             </SafeAreaView>
-          )}
-          {this.state.thereIsntProblem && (
+            : null}
+          {!this.state.failureObserved && abnormality ?
             <SafeAreaView style={styles.SafeAreaAlert}>
               <View style={styles.viewAlert}>
                 <Image
@@ -114,7 +107,7 @@ export class TestProcessScreen extends React.Component {
                 </Text>
               </View>
             </SafeAreaView>
-          )}
+            : null}
         </View>
       </SafeAreaView>
     );
