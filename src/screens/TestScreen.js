@@ -1,16 +1,15 @@
-import React, {Component} from 'react';
+import React from 'react';
 import {
   Text,
   View,
   SafeAreaView,
   TouchableOpacity,
-  Dimensions,
-  Image,
-  Button,
+  Dimensions
 } from 'react-native';
-import {StyleSheet} from 'react-native';
-import {CustomHeader} from '../export';
-import {observer, inject} from 'mobx-react';
+import { StyleSheet } from 'react-native';
+import { CustomHeader } from '../export';
+import AnimatedLoader from 'react-native-animated-loader';
+import { observer, inject } from 'mobx-react';
 import axios from 'axios';
 import config from '../../config.json';
 import ProgressBarAnimated from 'react-native-progress-bar-animated';
@@ -25,6 +24,7 @@ export class TestScreen extends React.Component {
       progressWithOnComplete: 0,
       progressCustomized: 0,
       maxValue: 100,
+      visible: false
     };
   }
 
@@ -92,45 +92,6 @@ export class TestScreen extends React.Component {
     }
   };
 */
-  render() {
-    const barWidth = Dimensions.get('screen').width - 1500;
-
-    return (
-      <SafeAreaView style={styles.app}>
-        <CustomHeader isTestScreen={true} navigation={this.props.navigation} />
-        <View style={styles.background}>
-          <Text style={styles.title}>
-            Hey {this.props.store.userDetails.name}!
-          </Text>
-          <Text style={styles.sentence}>
-            Before starting, please connect your kit
-          </Text>
-          <TouchableOpacity style={styles.button} onPress={this.StartTest}>
-            <Text style={styles.buttonText}>Start Test</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.instructionButton}
-            onPress={() => this.props.navigation.navigate('Description')}>
-            <Text style={styles.instructionTitle}>Press to instruction</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.ProgressBarAnimated}
-            onPress={() => this.props.navigation.navigate('RehabPlan')}>
-            <Text style={styles.label}>
-              {`You've made ${this.props.store.rehabProgress}% progress`}{' '}
-            </Text>
-            <ProgressBarAnimated
-              width={300}
-              maxValue={100}
-              value={this.props.store.rehabProgress}
-              backgroundColorOnComplete="#6CC644"
-              backgroundColor="#C9BDBD"
-            />
-          </TouchableOpacity>
-        </View>
-      </SafeAreaView>
-    );
-  }
 
   getKitDetails(token) {
     return new Promise(async (resolve, reject) => {
@@ -141,12 +102,7 @@ export class TestScreen extends React.Component {
             'x-auth-token': token,
           },
         };
-        const response = await axios.get(
-          `${config.SERVER_URL}/sensorsKit/${
-            this.props.store.userDetails.sensorsKitID
-          }`,
-          options,
-        );
+        const response = await axios.get(`${config.SERVER_URL}/sensorsKit/${this.props.store.userDetails.sensorsKitID}`, options);
         return resolve(response.data);
       } catch (ex) {
         return reject(new Error(ex.response.data.message));
@@ -158,15 +114,45 @@ export class TestScreen extends React.Component {
     return new Promise(async (resolve, reject) => {
       try {
         const options = {
-          headers: {
-            'x-auth-token': token,
-          },
+          headers: { 'x-auth-token': token }
         };
-        const response = await axios.post(
-          `${config.SERVER_URL}/test`,
-          null,
-          options,
-        );
+        const response = await axios.post(`${config.SERVER_URL}/test`, null, options);
+        return resolve(response.data);
+      } catch (ex) {
+        return reject(new Error(ex.response.data.message));
+      }
+    });
+  }
+
+  updateTest(token, testID, abnormality) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const body = { abnormality: abnormality };
+        const options = {
+          headers: {
+            'Content-Type': 'application/json',
+            'x-auth-token': token
+          }
+        };
+        const response = await axios.put(`${serverURL}/test/${testID}`, body, options);
+        return resolve(response.data);
+      } catch (ex) {
+        return reject(new Error(ex.response.data.message));
+      }
+    });
+  }
+
+  updatePatient(token, patientID, waitingStatus) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const body = { waitForPlan: waitingStatus };
+        const options = {
+          headers: {
+            'Content-Type': 'application/json',
+            'x-auth-token': token
+          }
+        };
+        const response = await axios.put(`${serverURL}/patient/${patientID}`, body, options);
         return resolve(response.data);
       } catch (ex) {
         return reject(new Error(ex.response.data.message));
@@ -206,7 +192,7 @@ export class TestScreen extends React.Component {
         return reject(
           new Error(
             `Error while trying to take sample from ${sensorName} -- ${
-              ex.message
+            ex.message
             }`,
           ),
         );
@@ -230,7 +216,7 @@ export class TestScreen extends React.Component {
         };
         const response = await axios.post(
           `${config.SERVER_URL}/sensorsKit/${
-            this.props.store.userDetails.sensorsKitID
+          this.props.store.userDetails.sensorsKitID
           }/analyzeRawData`,
           body,
           options,
@@ -242,50 +228,98 @@ export class TestScreen extends React.Component {
     });
   }
 
-  StartTest = async () => {
+  StartTestHandler = async () => {
     try {
-      this.props.navigation.navigate('TestProcess');
-      const {IPs} = await this.getKitDetails(
-        this.props.store.userLoginDetails.token,
-      );
-      const test = await this.createTest(
-        this.props.store.userLoginDetails.token,
-      );
+      this.setState({ visible: true });
+      const token = this.props.store.userLoginDetails.token;
+      const { IPs } = await this.getKitDetails(token);
+      const test = await this.createTest(token);
       let promise1; // , promise2, promise3, promise4, promise5, promise6, promise7;
-      promise1 = this.scanGaitAndAnalyze(
-        IPs.sensor1,
-        'sensor1',
-        this.props.store.userLoginDetails.token,
-        test.id,
-      );
-      // promise2 = this.scanGaitAndAnalyze(IPs.sensor2, 'sensor2', this.props.store.userLoginDetails.token, test.id);
-      // promise3 = this.scanGaitAndAnalyze(IPs.sensor3, 'sensor3', this.props.store.userLoginDetails.token, test.id);
-      // promise4 = this.scanGaitAndAnalyze(IPs.sensor4, 'sensor4', this.props.store.userLoginDetails.token, test.id);
-      // promise5 = this.scanGaitAndAnalyze(IPs.sensor5, 'sensor5', this.props.store.userLoginDetails.token, test.id);
-      // promise6 = this.scanGaitAndAnalyze(IPs.sensor6, 'sensor6', this.props.store.userLoginDetails.token, test.id);
-      // promise7 = this.scanGaitAndAnalyze(IPs.sensor7, 'sensor7', this.props.store.userLoginDetails.token, test.id);
+      promise1 = this.scanGaitAndAnalyze(IPs.sensor1, 'sensor1', token, test.id);
+      // promise2 = this.scanGaitAndAnalyze(IPs.sensor2, 'sensor2', token, test.id);
+      // promise3 = this.scanGaitAndAnalyze(IPs.sensor3, 'sensor3', token, test.id);
+      // promise4 = this.scanGaitAndAnalyze(IPs.sensor4, 'sensor4', token, test.id);
+      // promise5 = this.scanGaitAndAnalyze(IPs.sensor5, 'sensor5', token, test.id);
+      // promise6 = this.scanGaitAndAnalyze(IPs.sensor6, 'sensor6', token, test.id);
+      // promise7 = this.scanGaitAndAnalyze(IPs.sensor7, 'sensor7', token, test.id);
       // const conclusions = await Promise.all([promise1, promise2, promise3, promise4, promise5, promise6, promise7]);
+      this.setState({ visible: false });
+      this.props.navigation.navigate('TestProcess');
       const conclusions = await Promise.all([promise1]);
-      //stop loading
+      this.setState({ visible: true });
+      let abnormality = false, waitingStatus = false;
+      for (let conclusion of conclusions)
+        if (conclusion.failureObserved) {
+          abnormality = true;
+          waitingStatus = true
+          break;
+        }
+      await this.updateTest(token, test.id, abnormality);
+      await this.updatePatient(token, this.props.store.userDetails.id, waitingStatus);
+      this.setState({ visible: false });
+      this.props.store.abnormality = abnormality;
     } catch (err) {
-      alert(
-        'error has occured when trying to return Data. please check your details',
-      );
-      console.log('err', err);
+      this.setState({ visible: false });
+      alert(err.message);
     }
   };
+
+  render() {
+    return (
+      <SafeAreaView style={styles.app}>
+        <CustomHeader isTestScreen={true} navigation={this.props.navigation} />
+        <AnimatedLoader
+          visible={this.state.visible}
+          overlayColor="rgba(255,255,255,0.75)"
+          source={require('../constans/loader.json')}
+          animationStyle={styles.lottie}
+          speed={1}
+        />
+        <View style={styles.background}>
+          <Text style={styles.title}>
+            Hey {this.props.store.userDetails.name} !
+          </Text>
+          <Text style={styles.sentence}>
+            Before starting, please turn on your kit
+          </Text>
+          <TouchableOpacity style={styles.button} onPress={this.StartTestHandler}>
+            <Text style={styles.buttonText}>Start Gait Test</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.instructionButton}
+            onPress={() => this.props.navigation.navigate('Description')}>
+            <Text style={styles.instructionTitle}>Instructions</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.ProgressBarAnimated}
+            onPress={() => this.props.navigation.navigate('RehabPlan')}>
+            <Text style={styles.label}>
+              {`You've made ${this.props.store.rehabProgress}% progress of your rehab program`}
+            </Text>
+            <ProgressBarAnimated
+              width={300}
+              maxValue={100}
+              value={this.props.store.rehabProgress}
+              backgroundColorOnComplete="#6CC644"
+              backgroundColor="#C9BDBD"
+            />
+          </TouchableOpacity>
+        </View>
+      </SafeAreaView>
+    );
+  }
 }
 
 const styles = StyleSheet.create({
   lottie: {
     width: 100,
-    height: 100,
+    height: 100
   },
 
   background: {
     height: '100%',
     flex: 1,
-    alignItems: 'center',
+    alignItems: 'center'
   },
 
   title: {

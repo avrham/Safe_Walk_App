@@ -6,4 +6,5 @@ export default class AppStore {
   @observable RehabPlan = [];
   @observable StatusVideo = [];
   @observable rehabProgress = 0.0;
+  @observable abnormality = false;
 }
