@@ -3,7 +3,11 @@ import {Text, View, SafeAreaView, Image, BackHandler} from 'react-native';
 import {StyleSheet} from 'react-native';
 import {CustomHeader} from '../export';
 import {IMAGE} from '../constans/Image';
+import {observer, inject} from 'mobx-react';
+import AnimatedLoader from 'react-native-animated-loader';
 
+@inject('store')
+@observer
 export class TestProcessScreen extends React.Component {
   constructor(props) {
     super(props);
@@ -31,11 +35,19 @@ export class TestProcessScreen extends React.Component {
     }, 15000);
   }
   render() {
+    const {visible} = this.state;
     return (
       <SafeAreaView style={{flex: 1, backgroundColor: 'rgb(32,53,70)'}}>
         <CustomHeader
           isTestProcess={this.state.testProcess}
           navigation={this.props.navigation}
+        />
+        <AnimatedLoader
+          visible={visible}
+          overlayColor="rgba(255,255,255,0.75)"
+          source={require('../constans/loader.json')}
+          animationStyle={styles.lottie}
+          speed={1}
         />
         <View
           style={{
@@ -96,6 +108,10 @@ export class TestProcessScreen extends React.Component {
 }
 
 const styles = StyleSheet.create({
+  lottie: {
+    width: 100,
+    height: 100,
+  },
   rehabView: {
     flex: 1,
     marginBottom: 70,

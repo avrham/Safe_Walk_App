@@ -57,7 +57,6 @@ export class VideoDetailesScreen extends React.Component {
     };
     try {
       const url = await axios(options);
-      console.log(url.data);
 
       if (url.status === 200) {
       } else {
