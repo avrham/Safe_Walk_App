@@ -183,26 +183,14 @@ export class TestScreen extends React.Component {
           const stringLength = response.data.length;
           let output;
           if (response.data[stringLength - 2] === ',')
-            output =
-              response.data.slice(0, stringLength - 2) +
-              response.data.slice(stringLength - 1, stringLength);
+            output = response.data.slice(0, stringLength - 2) + response.data.slice(stringLength - 1, stringLength);
           output = JSON.parse(output);
           return resolve(this.analayseData(token, output, sensorName, testID));
         } catch (ex) {
-          return reject(
-            new Error(
-              `${sensorName} has failed during the sample, please make another test`,
-            ),
-          );
+          return reject(new Error(`${sensorName} has failed during the sample, please make another test`));
         }
       } catch (ex) {
-        return reject(
-          new Error(
-            `Error while trying to take sample from ${sensorName} -- ${
-            ex.message
-            }`,
-          ),
-        );
+        return reject(new Error(`${sensorName} has failed during the sample, please make another test`));
       }
     });
   }
@@ -221,13 +209,7 @@ export class TestScreen extends React.Component {
             'x-auth-token': token,
           },
         };
-        const response = await axios.post(
-          `${config.SERVER_URL}/sensorsKit/${
-          this.props.store.userDetails.sensorsKitID
-          }/analyzeRawData`,
-          body,
-          options,
-        );
+        const response = await axios.post(`${config.SERVER_URL}/sensorsKit/${this.props.store.userDetails.sensorsKitID}/analyzeRawData`, body, options);
         return resolve(response.data);
       } catch (ex) {
         return reject(new Error(ex.response.data.message));
@@ -269,8 +251,8 @@ export class TestScreen extends React.Component {
     } catch (err) {
       this.setState({ visible: false });
       this.removeTest(token, testID);
-      this.props.store.testProcessError = err.message;
       alert(err.message);
+      this.props.navigation.goBack();
     }
   };
 
