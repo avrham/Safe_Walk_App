@@ -30,18 +30,25 @@ export class TestScreen extends React.Component {
 
   componentDidMount() {
     this.props.store.abnormality = '';
+    this.props.store.errorOccured = false;
     if (this.props.store.userDetails.rehabPlanID != '') {
       this.calculateProgress();
     }
   }
 
   calculateProgress = () => {
-    const length = this.props.store.RehabPlan.videos.length;
+    const allVideolength = this.props.store.RehabPlan.videos.length;
+    let timesOfVideo = 0;
+    let timesLeft = 0;
     let i, j;
-    for (i = 0, j = 0; i < length; i++) {
-      this.props.store.RehabPlan.videos[i].done ? j++ : '';
+    for (i = 0, j = 0; i < allVideolength; i++) {
+      timesOfVideo = timesOfVideo + this.props.store.RehabPlan.videos[i].times;
+      timesLeft = timesLeft + this.props.store.RehabPlan.videos[i].timesLeft;
     }
-    this.props.store.rehabProgress = Number(((j / length) * 100).toFixed(1));
+    this.props.store.rehabProgress = Number(
+      ((1 - timesLeft / timesOfVideo) * 100).toFixed(1),
+    );
+    this.props.store.timesOfAllVideo = timesOfVideo;
   };
 
   /*getPatientDetails = async () => {
@@ -178,7 +185,7 @@ export class TestScreen extends React.Component {
   scanGaitAndAnalyze(ip, sensorName, token, testID) {
     return new Promise(async (resolve, reject) => {
       try {
-        const options = { timeout: 3000 };
+        const options = { timeout: 1500 };
         const response = await axios.get(`http://${ip}`, options);
         try {
           const stringLength = response.data.length;
@@ -250,11 +257,11 @@ export class TestScreen extends React.Component {
       await this.updatePatient(token, this.props.store.userDetails.id, waitingStatus);
       this.props.store.abnormality = abnormality;
     } catch (err) {
-      this.setState({ visible: false });
-      alert(err.message);
+      console.log('in catch');
+      this.props.store.errorOccured = true;
       this.props.navigation.goBack();
-      await this.removeTest(token, testID);
-      console.log();
+      alert(err.message);
+      this.removeTest(token, testID);
     }
   };
 

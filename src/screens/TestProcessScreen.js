@@ -1,9 +1,9 @@
-import React, {Component} from 'react';
-import {Text, View, SafeAreaView, Image, BackHandler} from 'react-native';
-import {StyleSheet} from 'react-native';
-import {CustomHeader} from '../export';
-import {IMAGE} from '../constans/Image';
-import {observer, inject} from 'mobx-react';
+import React, { Component } from 'react';
+import { Text, View, SafeAreaView, Image, BackHandler } from 'react-native';
+import { StyleSheet } from 'react-native';
+import { CustomHeader } from '../export';
+import { IMAGE } from '../constans/Image';
+import { observer, inject } from 'mobx-react';
 import AnimatedLoader from 'react-native-animated-loader';
 
 @inject('store')
@@ -12,38 +12,46 @@ export class TestProcessScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      isPart1: true,
-      isPart2: false,
-      isPart3: false,
-      thereIsAProblem: false,
-      thereIsntProblem: false,
+      shouldStand: true,
+      shouldWalk: false,
+      failureObserved: false,
       testProcess: true,
       visible: false,
     };
   }
 
   componentDidMount() {
-    setTimeout(() => {
-      this.setState({isPart1: false, isPart2: true});
-    }, 3000);
-    setTimeout(() => {
-      this.setState({isPart2: false});
-      while (this.props.store.abnormality === '') {
-        this.setState({visible: true});
-      }
-      console.log(this.props.store.abnormality)
-      if (this.props.store.abnormality === true) {
-        this.setState({thereIsAProblem: true});
-      } else {
-        this.setState({thereIsntProblem: true});
-      }
-      this.setState({visible: false});
-    }, 15000);
+    // setTimeout(() => {
+    //   this.setState({ shouldStand: false, shouldWalk: true });
+    //   setTimeout(() => {
+    //     const abnormality = this.props.store.abnormality;
+    //     this.setState({ visible: true });
+    //     this.setState({ shouldWalk: false });
+    //     while (abnormality === '' && !this.props.store.errorOccured);
+    //     this.setState({ visible: false });
+
+
+
+    //   }, 12000);
+    // }, 3000);
+
+
+    // setTimeout(() => {
+    //   while (this.props.store.abnormality === '' && !this.props.store.errorOccured);
+    //   if (this.props.store.abnormality === true && !this.props.store.errorOccured)
+    //     this.setState({ thereIsAProblem: true });
+    //   if (this.props.store.abnormality === false && !this.props.store.errorOccured)
+    //     this.setState({ thereIsntProblem: true });
+    //   this.setState({ visible: false });
+    // }, 15000);
   }
+
   render() {
-    const {visible} = this.state;
+    const { visible } = this.state;
+    if (this.props.store.errorOccured)
+      this.props.navigation.goBack();
     return (
-      <SafeAreaView style={{flex: 1, backgroundColor: 'rgb(32,53,70)'}}>
+      <SafeAreaView style={{ flex: 1, backgroundColor: 'rgb(32,53,70)' }}>
         <CustomHeader
           isTestProcess={this.state.testProcess}
           navigation={this.props.navigation}
