@@ -45,8 +45,8 @@ export class VideoDetailesScreen extends React.Component {
   videoDone = async () => {
     this.setState({ImgPress: true, timesLeft: this.state.timesLeft - 1});
     this.props.store.rehabProgress =
-      this.props.store.rehabProgress +
-      (1 / this.props.store.timesOfAllVideo) * 100;
+    Number(this.props.store.rehabProgress +
+      (1 / this.props.store.timesOfAllVideo) * 100).toFixed(1);
     const options = {
       method: 'POST',
       url: `${config.SERVER_URL}/rehabPlan/${
@@ -84,7 +84,10 @@ export class VideoDetailesScreen extends React.Component {
       <SafeAreaView style={{flex: 1}}>
         <StatusBar barStyle="dark-content" />
         <View>
-          <CustomHeader navigation={this.props.navigation} />
+          <CustomHeader
+            navigation={this.props.navigation}
+            videoDetailes={true}
+          />
         </View>
         <View style={{top: 20}}>
           <AnimatedLoader

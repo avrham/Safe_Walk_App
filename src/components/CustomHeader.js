@@ -21,7 +21,13 @@ export class CustomHeader extends React.Component {
   }
 
   render() {
-    let {navigation, isTestScreen, isRehabScreen, isTestProcess} = this.props;
+    let {
+      navigation,
+      isTestScreen,
+      isRehabScreen,
+      isTestProcess,
+      videoDetailes,
+    } = this.props;
     return (
       <SafeAreaView
         style={{
@@ -55,10 +61,22 @@ export class CustomHeader extends React.Component {
               </TouchableOpacity>
             </SafeAreaView>
           )}
-          {!isRehabScreen && !isTestScreen && !isTestProcess && (
+          {!isRehabScreen && !isTestScreen && !isTestProcess && !videoDetailes && (
             <TouchableOpacity
               style={{flexDirection: 'row', alignItems: 'center'}}
               onPress={() => navigation.goBack()}>
+              <Image
+                style={{width: 25, height: 25}}
+                source={IMAGE.ICON_RETURN}
+                resizeMode="contain"
+              />
+              <Text style={{color: '#5D8B91'}}>Back</Text>
+            </TouchableOpacity>
+          )}
+          {videoDetailes && (
+            <TouchableOpacity
+              style={{flexDirection: 'row', alignItems: 'center'}}
+              onPress={() => this.props.navigation.navigate('RehabPlan')}>
               <Image
                 style={{width: 25, height: 25}}
                 source={IMAGE.ICON_RETURN}
