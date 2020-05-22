@@ -7,4 +7,5 @@ export default class AppStore {
   @observable StatusVideo = [];
   @observable rehabProgress = 0.0;
   @observable abnormality = '';
+  @observable testProcessError = '';
 }

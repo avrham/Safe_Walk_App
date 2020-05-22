@@ -163,15 +163,8 @@ export class TestScreen extends React.Component {
   scanGaitAndAnalyze(ip, sensorName, token, testID) {
     return new Promise(async (resolve, reject) => {
       try {
-        const options = {
-          timeout: 15000,
-        };
-
-        // start walking process
-
+        const options = { timeout: 4500 };
         const response = await axios.get(`http://${ip}`, options);
-
-        //start loading
         try {
           const stringLength = response.data.length;
           let output;
@@ -256,10 +249,11 @@ export class TestScreen extends React.Component {
         }
       await this.updateTest(token, test.id, abnormality);
       await this.updatePatient(token, this.props.store.userDetails.id, waitingStatus);
-      this.setState({ visible: false });
+
       this.props.store.abnormality = abnormality;
     } catch (err) {
       this.setState({ visible: false });
+      this.props.store.testProcessError = 'err.message';
       alert(err.message);
     }
   };
