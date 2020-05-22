@@ -201,8 +201,8 @@ export class LoginScreen extends React.Component {
 
 const styles = StyleSheet.create({
   lottie: {
-    width: 200,
-    height: 200,
+    width: 100,
+    height: 100,
   },
   loader: {
     position: 'absolute',
@@ -218,8 +218,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   logo: {
-    width: 180,
-    height: 70,
+    width: 260,
+    height: 100,
   },
   title: {
     color: '#C9BDBD',
