@@ -29,6 +29,7 @@ export class TestScreen extends React.Component {
   }
 
   componentDidMount() {
+    this.props.store.abnormality = '';
     if (this.props.store.userDetails.rehabPlanID != '') {
       this.calculateProgress();
     }
@@ -177,7 +178,7 @@ export class TestScreen extends React.Component {
   scanGaitAndAnalyze(ip, sensorName, token, testID) {
     return new Promise(async (resolve, reject) => {
       try {
-        const options = { timeout: 500 };
+        const options = { timeout: 3000 };
         const response = await axios.get(`http://${ip}`, options);
         try {
           const stringLength = response.data.length;

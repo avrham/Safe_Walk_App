@@ -23,14 +23,15 @@ export class TestProcessScreen extends React.Component {
   }
 
   componentDidMount() {
-    this.timeoutHandle = setTimeout(() => {
+    setTimeout(() => {
       this.setState({isPart1: false, isPart2: true});
     }, 3000);
-    this.timeoutHandle = setTimeout(() => {
+    setTimeout(() => {
       this.setState({isPart2: false});
-      while (this.props.store.abnormality != '') {
+      while (this.props.store.abnormality === '') {
         this.setState({visible: true});
       }
+      console.log(this.props.store.abnormality)
       if (this.props.store.abnormality === true) {
         this.setState({thereIsAProblem: true});
       } else {
