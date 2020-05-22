@@ -177,7 +177,7 @@ export class TestScreen extends React.Component {
   scanGaitAndAnalyze(ip, sensorName, token, testID) {
     return new Promise(async (resolve, reject) => {
       try {
-        const options = { timeout: 4500 };
+        const options = { timeout: 500 };
         const response = await axios.get(`http://${ip}`, options);
         try {
           const stringLength = response.data.length;
@@ -224,7 +224,7 @@ export class TestScreen extends React.Component {
       this.setState({ visible: true });
       const { IPs } = await this.getKitDetails(token);
       const test = await this.createTest(token);
-      testID - test.id;
+      testID = test.id;
       let promise1; // , promise2, promise3, promise4, promise5, promise6, promise7;
       promise1 = this.scanGaitAndAnalyze(IPs.sensor1, 'sensor1', token, testID);
       // promise2 = this.scanGaitAndAnalyze(IPs.sensor2, 'sensor2', token, testID);
@@ -250,9 +250,10 @@ export class TestScreen extends React.Component {
       this.props.store.abnormality = abnormality;
     } catch (err) {
       this.setState({ visible: false });
-      this.removeTest(token, testID);
       alert(err.message);
       this.props.navigation.goBack();
+      await this.removeTest(token, testID);
+      console.log();
     }
   };
 
