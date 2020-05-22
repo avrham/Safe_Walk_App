@@ -54,7 +54,7 @@ export class TestProcessScreen extends React.Component {
               Pleast start walking in a straight line for 60 seconds !
             </Text>
           )}
-          {this.props.store.abnormality && (
+          {this.props.store.abnormality === true && (
             <SafeAreaView style={styles.SafeAreaAlert}>
               <View style={styles.viewAlert}>
                 <Image
