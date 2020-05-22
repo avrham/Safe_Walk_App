@@ -26,39 +26,45 @@ export class VideoDetailesScreen extends React.Component {
     super(props);
     this.state = {
       visible: false,
+      videoId: '',
+      timesLeft: 0,
     };
   }
 
   componentDidMount() {
-    this.setState({visible: true});
+    this.setState({
+      visible: true,
+      videoId: this.props.route.params.id,
+      timesLeft: this.props.route.params.times,
+    });
     setTimeout(() => {
       this.setState({visible: false});
     }, 2000);
   }
 
   videoDone = async () => {
-    this.setState({ImgPress: true});
+    this.setState({ImgPress: true, timesLeft: this.state.timesLeft - 1});
     this.props.store.rehabProgress =
       this.props.store.rehabProgress +
-      (1 / this.props.store.RehabPlan.videos.length) * 100;
-
+      (1 / this.props.store.timesOfAllVideo) * 100;
     const options = {
       method: 'POST',
       url: `${config.SERVER_URL}/rehabPlan/${
         this.props.store.userDetails.rehabPlanID
       }/markVideo`,
       data: {
-        videoID: this.props.id,
+        videoID: this.state.videoId,
       },
       headers: {
         'Content-Type': 'application/json',
         'x-auth-token': this.props.store.userLoginDetails.token,
       },
     };
+    console.log(options);
     try {
       const url = await axios(options);
-
       if (url.status === 200) {
+        this.props.store.RehabPlan = url.data;
       } else {
         Alert.alert('error has occured, Please try again in a few minutes');
       }
@@ -71,7 +77,7 @@ export class VideoDetailesScreen extends React.Component {
   };
 
   render() {
-    const {id, title, videoLink, videoStatus, times} = this.props.route.params;
+    const {title, videoLink} = this.props.route.params;
     const {visible} = this.state;
 
     return (
@@ -95,13 +101,15 @@ export class VideoDetailesScreen extends React.Component {
               scalesPageToFit={false}
             />
           </View>
-          {times > 0 && (
+          {this.state.timesLeft > 0 && (
             <View>
               <View style={styles.videoInfo}>
                 <View style={{justifyContent: 'center'}}>
                   <Text style={styles.videoTitle}>{title}</Text>
                   <Text style={styles.videoTimes}>
-                    {`You have ${times} more time to finish this mission!`}
+                    {`You have ${
+                      this.state.timesLeft
+                    } more time to finish this mission!`}
                   </Text>
                 </View>
               </View>
@@ -121,11 +129,12 @@ export class VideoDetailesScreen extends React.Component {
                     end: {x: 1, y: 0.5},
                   }}
                   style={styles.Button}
+                  onPress={this.videoDone}
                 />
               </View>
             </View>
           )}
-          {times === 0 && (
+          {this.state.timesLeft === 0 && (
             <View>
               <View style={styles.videoInfo}>
                 <View style={{justifyContent: 'center'}}>

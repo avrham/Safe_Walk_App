@@ -58,7 +58,7 @@ export class RehabilitionScreen extends React.Component {
       this.state.videoStatusArray.push({
         id: this.props.store.RehabPlan.videos[i].videoID,
         Videostatus: this.props.store.RehabPlan.videos[i].done,
-        times: this.props.store.RehabPlan.videos[i].times,
+        times: this.props.store.RehabPlan.videos[i].timesLeft,
       });
       if (i < length - 1) {
         this.setState(prevState => ({
