@@ -19,7 +19,7 @@ import ProgressBarAnimated from 'react-native-progress-bar-animated';
 @observer
 export class TestScreen extends React.Component {
   constructor(props) {
-    super(props);
+    super(props)
     this.state = {
       rehabPlanID: '',
       progressWithOnComplete: 0,
