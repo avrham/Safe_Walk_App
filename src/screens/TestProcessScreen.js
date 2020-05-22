@@ -17,7 +17,6 @@ export class TestProcessScreen extends React.Component {
       isPart3: false,
       thereIsAProblem: false,
       thereIsntProblem: false,
-      testProcessError: false,
       testProcess: true,
       visible: false,
     };
@@ -29,20 +28,13 @@ export class TestProcessScreen extends React.Component {
     }, 3000);
     this.timeoutHandle = setTimeout(() => {
       this.setState({isPart2: false});
-      while (
-        this.props.store.abnormality != '' &&
-        this.props.store.testProcessError != ''
-      ) {
+      while (this.props.store.abnormality != '') {
         this.setState({visible: true});
       }
       if (this.props.store.abnormality === true) {
         this.setState({thereIsAProblem: true});
       } else {
-        if (this.props.store.abnormality === false) {
-          this.setState({thereIsntProblem: true});
-        } else {
-          this.setState({testProcessError: true});
-        }
+        this.setState({thereIsntProblem: true});
       }
       this.setState({visible: false});
     }, 15000);
@@ -110,21 +102,6 @@ export class TestProcessScreen extends React.Component {
                 <Text style={styles.message}>
                   We're happy to let you know that your Walking model is ok and
                   not might have problem !
-                </Text>
-              </View>
-            </SafeAreaView>
-          )}
-          {this.state.testProcessError && (
-            <SafeAreaView style={styles.SafeAreaAlert}>
-              <View style={styles.viewAlert}>
-                <Image
-                  source={IMAGE.ICOM_ALERT}
-                  style={styles.alertImg}
-                  resizeMode="contain"
-                />
-                <Text style={styles.message}>Something wrong !</Text>
-                <Text style={styles.message}>
-                  {this.props.store.testProcessError}
                 </Text>
               </View>
             </SafeAreaView>
