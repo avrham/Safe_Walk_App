@@ -124,6 +124,20 @@ export class TestScreen extends React.Component {
     });
   }
 
+  removeTest(token, testID) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const options = {
+          headers: { 'x-auth-token': token }
+        };
+        await axios.delete(`${config.SERVER_URL}/test/${testID}`, null, options);
+        return resolve();
+      } catch (ex) {
+        return reject(new Error(ex.response.data.message));
+      }
+    });
+  }
+
   updateTest(token, testID, abnormality) {
     return new Promise(async (resolve, reject) => {
       try {
@@ -222,19 +236,21 @@ export class TestScreen extends React.Component {
   }
 
   StartTestHandler = async () => {
+    let testID;
+    const token = this.props.store.userLoginDetails.token;
     try {
       this.setState({ visible: true });
-      const token = this.props.store.userLoginDetails.token;
       const { IPs } = await this.getKitDetails(token);
       const test = await this.createTest(token);
+      testID - test.id;
       let promise1; // , promise2, promise3, promise4, promise5, promise6, promise7;
-      promise1 = this.scanGaitAndAnalyze(IPs.sensor1, 'sensor1', token, test.id);
-      // promise2 = this.scanGaitAndAnalyze(IPs.sensor2, 'sensor2', token, test.id);
-      // promise3 = this.scanGaitAndAnalyze(IPs.sensor3, 'sensor3', token, test.id);
-      // promise4 = this.scanGaitAndAnalyze(IPs.sensor4, 'sensor4', token, test.id);
-      // promise5 = this.scanGaitAndAnalyze(IPs.sensor5, 'sensor5', token, test.id);
-      // promise6 = this.scanGaitAndAnalyze(IPs.sensor6, 'sensor6', token, test.id);
-      // promise7 = this.scanGaitAndAnalyze(IPs.sensor7, 'sensor7', token, test.id);
+      promise1 = this.scanGaitAndAnalyze(IPs.sensor1, 'sensor1', token, testID);
+      // promise2 = this.scanGaitAndAnalyze(IPs.sensor2, 'sensor2', token, testID);
+      // promise3 = this.scanGaitAndAnalyze(IPs.sensor3, 'sensor3', token, testID);
+      // promise4 = this.scanGaitAndAnalyze(IPs.sensor4, 'sensor4', token, testID);
+      // promise5 = this.scanGaitAndAnalyze(IPs.sensor5, 'sensor5', token, testID);
+      // promise6 = this.scanGaitAndAnalyze(IPs.sensor6, 'sensor6', token, testID);
+      // promise7 = this.scanGaitAndAnalyze(IPs.sensor7, 'sensor7', token, testID);
       // const conclusions = await Promise.all([promise1, promise2, promise3, promise4, promise5, promise6, promise7]);
       this.setState({ visible: false });
       this.props.navigation.navigate('TestProcess');
@@ -247,13 +263,13 @@ export class TestScreen extends React.Component {
           waitingStatus = true
           break;
         }
-      await this.updateTest(token, test.id, abnormality);
+      await this.updateTest(token, testID, abnormality);
       await this.updatePatient(token, this.props.store.userDetails.id, waitingStatus);
-
       this.props.store.abnormality = abnormality;
     } catch (err) {
       this.setState({ visible: false });
-      this.props.store.testProcessError = 'err.message';
+      this.removeTest(token, testID);
+      this.props.store.testProcessError = err.message;
       alert(err.message);
     }
   };
