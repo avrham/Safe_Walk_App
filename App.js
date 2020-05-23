@@ -9,7 +9,6 @@ import {
   TestScreen,
   InstructionScreen,
   RehabilitionScreen,
-  TestProcessScreen,
   LoginScreen,
   NotificationsScreen,
   CustomHeader,
@@ -43,11 +42,6 @@ function TestStack() {
       <StackTest.Screen
         name="Description"
         component={InstructionScreen}
-        options={navOptionHandler}
-      />
-      <StackTest.Screen
-        name="TestProcess"
-        component={TestProcessScreen}
         options={navOptionHandler}
       />
     </StackTest.Navigator>
