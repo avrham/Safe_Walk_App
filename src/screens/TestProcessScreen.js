@@ -26,7 +26,7 @@ export class TestProcessScreen extends React.Component {
       setTimeout(() => {
         let abnormality = this.props.store.abnormality;
         let errorOccured = this.props.store.errorOccured;
-        this.setState({ visible: true });
+        // this.setState({ visible: true });
         this.setState({ shouldWalk: false });
         while (abnormality === '' && !errorOccured) {
           abnormality = this.props.store.abnormality;
@@ -42,7 +42,6 @@ export class TestProcessScreen extends React.Component {
 
   render() {
     const { visible } = this.state;
-    const abnormality = this.props.store.abnormality;
     return (
       <SafeAreaView style={{ flex: 1, backgroundColor: 'rgb(32,53,70)' }}>
         <CustomHeader

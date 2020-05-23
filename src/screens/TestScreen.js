@@ -3,10 +3,12 @@ import {
   Text,
   View,
   SafeAreaView,
-  TouchableOpacity
+  TouchableOpacity,
+  Image,
+  StyleSheet
 } from 'react-native';
-import { StyleSheet } from 'react-native';
 import { CustomHeader } from '../export';
+import { IMAGE } from '../constans/Image';
 import AnimatedLoader from 'react-native-animated-loader';
 import { observer, inject } from 'mobx-react';
 import axios from 'axios';
@@ -19,18 +21,18 @@ export class TestScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      rehabPlanID: '',
-      progressWithOnComplete: 0,
-      progressCustomized: 0,
-      maxValue: 100,
-      visible: false
+      visible: false,
+      shouldRenderTestProcessPage: false,
+      abnormality: false,
+      testFinished: false,
+      shouldStand: true,
+      shouldWalk: false,
+      errorMessage: ''
     };
   }
 
   componentDidMount() {
-    this.props.store.abnormality = '';
-    this.props.store.errorOccured = false;
-    if (this.props.store.userDetails.rehabPlanID != '') {
+    if (this.props.store.userDetails.rehabPlanID !== '') {
       this.calculateProgress();
     }
   }
@@ -44,9 +46,7 @@ export class TestScreen extends React.Component {
       timesOfVideo = timesOfVideo + this.props.store.RehabPlan.videos[i].times;
       timesLeft = timesLeft + this.props.store.RehabPlan.videos[i].timesLeft;
     }
-    this.props.store.rehabProgress = Number(
-      ((1 - timesLeft / timesOfVideo) * 100).toFixed(1),
-    );
+    this.props.store.rehabProgress = Number(((1 - timesLeft / timesOfVideo) * 100).toFixed(1));
     this.props.store.timesOfAllVideo = timesOfVideo;
   };
 
@@ -81,18 +81,16 @@ export class TestScreen extends React.Component {
     });
   }
 
-  removeTest(token, testID) {
-    return new Promise(async (resolve, reject) => {
-      try {
-        const options = {
-          headers: { 'x-auth-token': token }
-        };
-        await axios.delete(`${config.SERVER_URL}/test/${testID}`, null, options);
-        return resolve();
-      } catch (ex) {
-        return reject(new Error(ex.response.data.message));
-      }
-    });
+  async removeTest(token, testID) {
+    try {
+      const options = {
+        headers: { 'x-auth-token': token }
+      };
+      await axios.delete(`${config.SERVER_URL}/test/${testID}`, options);
+      return;
+    } catch (ex) {
+      return;
+    }
   }
 
   updateTest(token, testID, abnormality) {
@@ -105,7 +103,7 @@ export class TestScreen extends React.Component {
             'x-auth-token': token
           }
         };
-        const response = await axios.put(`${serverURL}/test/${testID}`, body, options);
+        const response = await axios.put(`${config.SERVER_URL}/test/${testID}`, body, options);
         return resolve(response.data);
       } catch (ex) {
         return reject(new Error(ex.response.data.message));
@@ -123,7 +121,7 @@ export class TestScreen extends React.Component {
             'x-auth-token': token
           }
         };
-        const response = await axios.put(`${serverURL}/patient/${patientID}`, body, options);
+        const response = await axios.put(`${config.SERVER_URL}/patient/${patientID}`, body, options);
         return resolve(response.data);
       } catch (ex) {
         return reject(new Error(ex.response.data.message));
@@ -154,6 +152,7 @@ export class TestScreen extends React.Component {
 
   analayseData(token, rawData, sensorName, testID) {
     return new Promise(async (resolve, reject) => {
+      if (!this.state.visible) this.setState({ visible: true });
       try {
         const body = {
           sensorName: sensorName,
@@ -175,14 +174,21 @@ export class TestScreen extends React.Component {
   }
 
   StartTestHandler = async () => {
-    let testID;
+    let testID, timeout;
     const token = this.props.store.userLoginDetails.token;
     try {
-      this.setState({ visible: true });
+      this.setState({ visible: true, errorMessage: '' });
       const { IPs } = await this.getKitDetails(token);
       const test = await this.createTest(token);
       testID = test.id;
-      let promise1; // , promise2, promise3, promise4, promise5, promise6, promise7;
+      let promise1; // promise2, promise3, promise4, promise5, promise6, promise7;
+      this.setState({ visible: false, shouldRenderTestProcessPage: true });
+      timeout = setTimeout(() => {
+        this.setState({
+          shouldStand: false,
+          shouldWalk: true
+        });
+      }, 5000);
       promise1 = this.scanGaitAndAnalyze(IPs.sensor1, 'sensor1', token, testID);
       // promise2 = this.scanGaitAndAnalyze(IPs.sensor2, 'sensor2', token, testID);
       // promise3 = this.scanGaitAndAnalyze(IPs.sensor3, 'sensor3', token, testID);
@@ -191,10 +197,7 @@ export class TestScreen extends React.Component {
       // promise6 = this.scanGaitAndAnalyze(IPs.sensor6, 'sensor6', token, testID);
       // promise7 = this.scanGaitAndAnalyze(IPs.sensor7, 'sensor7', token, testID);
       // const conclusions = await Promise.all([promise1, promise2, promise3, promise4, promise5, promise6, promise7]);
-      this.setState({ visible: false });
-      this.props.navigation.navigate('TestProcess');
       const conclusions = await Promise.all([promise1]);
-      this.setState({ visible: true });
       let abnormality = false, waitingStatus = false;
       for (let conclusion of conclusions)
         if (conclusion.failureObserved) {
@@ -204,25 +207,35 @@ export class TestScreen extends React.Component {
         }
       await this.updateTest(token, testID, abnormality);
       await this.updatePatient(token, this.props.store.userDetails.id, waitingStatus);
-      this.props.store.abnormality = abnormality;
+      this.setState({ visible: false, testFinished: true, abnormality: abnormality });
     } catch (err) {
-      this.props.store.errorOccured = true;
-      alert(err.message);
-      this.props.navigation.goBack();
-      await this.removeTest(token, testID);
+      clearTimeout(timeout);
+      this.setState({
+        visible: false,
+        shouldRenderTestProcessPage: false,
+        abnormality: false,
+        testFinished: false,
+        shouldStand: true,
+        shouldWalk: false,
+        errorMessage: err.message
+      });
+      // alert(err.message);
+      if (testID)
+        this.removeTest(token, testID);
     }
   };
 
-  render() {
+  renderTestPage() {
+    this.state.errorMessage ? alert(this.state.errorMessage) : null;
     return (
       <SafeAreaView style={styles.app}>
-        <CustomHeader isTestScreen={true} navigation={this.props.navigation} />
+        <CustomHeader navigation={this.props.navigation} />
         <AnimatedLoader
           visible={this.state.visible}
           overlayColor="rgba(255,255,255,0.75)"
           source={require('../constans/loader.json')}
           animationStyle={styles.lottie}
-          speed={1}
+          speed={2}
         />
         <View style={styles.background}>
           <Text style={styles.title}>
@@ -257,9 +270,128 @@ export class TestScreen extends React.Component {
       </SafeAreaView>
     );
   }
+
+  renderTestProcess() {
+    const { visible } = this.state;
+    return (
+      <SafeAreaView style={styles.app}>
+        <CustomHeader
+          navigation={this.props.navigation}
+        />
+        <AnimatedLoader
+          visible={visible}
+          overlayColor="rgba(255,255,255,0.75)"
+          source={require('../constans/loader.json')}
+          animationStyle={styles.lottie}
+          speed={2}
+        />
+        <View
+          style={{
+            flex: 1,
+            justifyContent: 'center',
+            alignItems: 'center',
+            backgroundColor: '#C9BDBD',
+          }}>
+          {this.state.shouldStand && (
+            <Text style={styles.message}>
+              Please stand in place for 5 seconds
+            </Text>
+          )}
+          {this.state.shouldWalk && (
+            <Text style={styles.message}>
+              Pleast start walking in a straight line for 15 seconds
+            </Text>
+          )}
+        </View>
+      </SafeAreaView>
+    );
+  }
+
+  renderTestResults() {
+    return (
+      <SafeAreaView style={styles.app}>
+        <CustomHeader
+          navigation={this.props.navigation}
+        />
+        <View
+          style={{
+            flex: 1,
+            justifyContent: 'center',
+            alignItems: 'center',
+            backgroundColor: '#C9BDBD',
+          }}>
+          {this.state.abnormality ?
+            <SafeAreaView style={styles.SafeAreaAlert}>
+              <View style={styles.viewAlert}>
+                <Image
+                  source={IMAGE.ICOM_ALERT}
+                  style={styles.alertImg}
+                  resizeMode="contain"
+                />
+                <Text style={styles.message}>
+                  Walking model might have problem !
+                </Text>
+                <Text style={styles.message}>
+                  Your test results were sent to the main lab
+                </Text>
+                <Text style={styles.message}>
+                  Rehabilitation program will be sent as soon as possible
+                </Text>
+              </View>
+            </SafeAreaView>
+            :
+            <SafeAreaView style={styles.SafeAreaAlert}>
+              <View style={styles.viewAlert}>
+                <Image
+                  source={IMAGE.ICON_TESTOK}
+                  style={styles.alertImg}
+                  resizeMode="contain"
+                />
+                <Text style={styles.message}>
+                  We're happy to let you know that your Walking model is ok and
+                  not might have problem !
+                </Text>
+              </View>
+            </SafeAreaView>
+          }
+        </View>
+      </SafeAreaView>
+    );
+  }
+
+  render() {
+    if (this.state.shouldRenderTestProcessPage && !this.state.testFinished)
+      return this.renderTestProcess();
+
+    if (this.state.shouldRenderTestProcessPage && this.state.testFinished)
+      return this.renderTestResults();
+
+    if (!this.state.shouldRenderTestProcessPage)
+      return this.renderTestPage();
+  }
 }
 
 const styles = StyleSheet.create({
+  viewAlert: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  message: {
+    fontSize: 20,
+    fontFamily: 'ComicNeue-BoldItalic',
+    justifyContent: 'center',
+    textAlign: 'center',
+    padding: 20,
+  },
+  alertImg: {
+    width: 50,
+    height: 50,
+    marginBottom: 50,
+  },
+  SafeAreaAlert: {
+    flex: 1,
+  },
   lottie: {
     width: 100,
     height: 100
