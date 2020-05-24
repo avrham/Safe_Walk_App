@@ -165,6 +165,8 @@ export class LoginScreen extends React.Component {
 
   login = async () => {
     this.setState({visible: true});
+    this.props.store.rehabProgress = 0;
+
     //const m = 'ziperfal@gmail.com';
     //const p = '123456';
     const m = 'aneeman@gmail.com';

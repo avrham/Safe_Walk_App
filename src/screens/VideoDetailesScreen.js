@@ -6,6 +6,7 @@ import {
   StatusBar,
   Dimensions,
   Image,
+  TouchableOpacity
 } from 'react-native';
 import {CustomHeader} from '../export';
 import {WebView} from 'react-native-webview';
@@ -125,7 +126,7 @@ export class VideoDetailesScreen extends React.Component {
               <View style={styles.ButtonContainer}>
                 <Button
                   title="Done"
-                  ViewComponent={LinearGradient} // Don't forget this!
+                  ViewComponent={LinearGradient}
                   linearGradientProps={{
                     colors: ['#48A1A7', '#203546'],
                     start: {x: 0, y: 0.5},
@@ -143,7 +144,13 @@ export class VideoDetailesScreen extends React.Component {
                 <View style={{justifyContent: 'center'}}>
                   <Text style={styles.videoTitle}>{title}</Text>
                   <Text style={styles.videoTimes}>
-                    {`Well done you finish this mission!`}
+                    {'Well done you finish this mission!'}
+                  </Text>
+                  <Text style={styles.videoTimes}>
+                    {' '}
+                  </Text>
+                  <Text style={styles.videoTimes}>
+                    {' '}
                   </Text>
                 </View>
               </View>
@@ -162,19 +169,19 @@ export class VideoDetailesScreen extends React.Component {
               </View>
             </View>
           )}
-          <View style={styles.ProgressBarAnimated}>
-            <Text style={styles.label}>
-              {`You've made ${this.props.store.rehabProgress}% progress`}{' '}
-            </Text>
-            <ProgressBarAnimated
-              width={300}
-              maxValue={100}
-              value={this.props.store.rehabProgress}
-              backgroundColorOnComplete="#6CC644"
-              backgroundColor="#C9BDBD"
-            />
-          </View>
         </View>
+          <View style={styles.ProgressBarAnimated}>
+              <Text style={styles.label}>
+                {`You've made ${this.props.store.rehabProgress}% progress`}{' '}
+              </Text>
+              <ProgressBarAnimated
+                width={300}
+                maxValue={100}
+                value={this.props.store.rehabProgress}
+                backgroundColorOnComplete="#6CC644"
+                backgroundColor="#C9BDBD"
+              />
+          </View>
       </SafeAreaView>
     );
   }
@@ -211,23 +218,28 @@ const styles = StyleSheet.create({
     fontSize: 14,
     opacity: 0.8,
   },
-  ProgressBarAnimated: {
-    top: 270,
-    alignItems: 'center',
-  },
-  label: {
-    color: '#999',
-    fontSize: 14,
-    fontWeight: '500',
-    marginBottom: 10,
-    textAlign: 'center',
-    fontFamily: 'Lato-Regular',
-  },
   ButtonContainer: {
-    top: 260,
+    top: 220,
     alignItems: 'center',
   },
   Button: {
     width: 200,
   },
+  ProgressBarAnimated: {
+    padding: 10,
+    borderRadius: 5,
+    flex: 1,
+    marginTop:260,
+    textAlign: 'center',
+    alignItems: 'center',
+  },
+  label: {
+    color: 'black',
+    opacity: 0.8,
+    fontSize: 14,
+    marginBottom: 10,
+    textAlign: 'center',
+    fontFamily: 'Lato-Regular',
+  },
+
 });

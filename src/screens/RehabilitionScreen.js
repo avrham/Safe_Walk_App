@@ -42,6 +42,12 @@ export class RehabilitionScreen extends React.Component {
     this.checkIfRehabPlanExsist();
   }
 
+  componentDidUpdate(store) {
+    console.log('aaa')
+    this.getVidoId();
+    
+  }
+
   checkIfRehabPlanExsist = () => {
     if (this.props.store.userDetails.rehabPlanID != '') {
       this.setState({RehabPlanExsist: true});
@@ -195,26 +201,28 @@ export class RehabilitionScreen extends React.Component {
         <CustomHeader isRehabScreen={true} navigation={this.props.navigation} />
         <View style={styles.background}>
           {this.state.RehabPlanExsist && (
-            <View style={styles.listContainer}>
-              <AnimatedLoader
-                visible={visible}
-                overlayColor="rgba(255,255,255,0.75)"
-                source={require('../constans/loader.json')}
-                animationStyle={styles.lottie}
-                speed={1}
-              />
-              <View style={{}}>
-                <Text style={styles.descriptionTitle}>
-                  {this.props.store.RehabPlan.instructions}
-                </Text>
-              </View>
-              <View style={{width: Dimensions.get('window').width - 14}}>
-                <FlatList
-                  data={this.state.mergeArray}
-                  renderItem={this.renderItem}
-                  ItemSeparatorComponent={this.FlatListItemSeparator}
-                  style={styles.FlatList}
+            <View>
+              <View style={styles.listContainer}>
+                <AnimatedLoader
+                  visible={visible}
+                  overlayColor="rgba(255,255,255,0.75)"
+                  source={require('../constans/loader.json')}
+                  animationStyle={styles.lottie}
+                  speed={1}
                 />
+                <View style={{}}>
+                  <Text style={styles.descriptionTitle}>
+                    {this.props.store.RehabPlan.instructions}
+                  </Text>
+                </View>
+                <View style={{width: Dimensions.get('window').width - 14}}>
+                  <FlatList
+                    data={this.state.mergeArray}
+                    renderItem={this.renderItem}
+                    ItemSeparatorComponent={this.FlatListItemSeparator}
+                    style={styles.FlatList}
+                  />
+                </View>
               </View>
               <View style={styles.ProgressBarAnimated}>
                 <Text style={styles.label}>
@@ -304,10 +312,16 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(255,255,255,0.5)',
   },
   ProgressBarAnimated: {
-    top: 50,
+    padding: 10,
+    borderRadius: 5,
+    flex: 1,
+    justifyContent: 'flex-end',
+    textAlign: 'center',
+    alignItems: 'center',
   },
   label: {
-    color: '#999',
+    color: 'black',
+    opacity: 0.8,
     fontSize: 14,
     fontWeight: '500',
     marginBottom: 10,
