@@ -6,7 +6,7 @@ import {
   StatusBar,
   Dimensions,
   Image,
-  TouchableOpacity
+  TouchableOpacity,
 } from 'react-native';
 import {CustomHeader} from '../export';
 import {WebView} from 'react-native-webview';
@@ -43,11 +43,23 @@ export class VideoDetailesScreen extends React.Component {
     }, 2000);
   }
 
+  calculateProgress = () => {
+    const allVideolength = this.props.store.RehabPlan.videos.length;
+    let timesOfVideo = 0;
+    let timesLeft = 0;
+    let i, j;
+    for (i = 0, j = 0; i < allVideolength; i++) {
+      timesOfVideo = timesOfVideo + this.props.store.RehabPlan.videos[i].times;
+      timesLeft = timesLeft + this.props.store.RehabPlan.videos[i].timesLeft;
+    }
+    this.props.store.rehabProgress = Number(
+      ((1 - timesLeft / timesOfVideo) * 100).toFixed(1),
+    );
+    this.props.store.timesOfAllVideo = timesOfVideo;
+  };
+
   videoDone = async () => {
     this.setState({ImgPress: true, timesLeft: this.state.timesLeft - 1});
-    this.props.store.rehabProgress =
-    Number(this.props.store.rehabProgress +
-      (1 / this.props.store.timesOfAllVideo) * 100).toFixed(1);
     const options = {
       method: 'POST',
       url: `${config.SERVER_URL}/rehabPlan/${
@@ -61,7 +73,6 @@ export class VideoDetailesScreen extends React.Component {
         'x-auth-token': this.props.store.userLoginDetails.token,
       },
     };
-    console.log(options);
     try {
       const url = await axios(options);
       if (url.status === 200) {
@@ -74,6 +85,10 @@ export class VideoDetailesScreen extends React.Component {
         'error has occured when trying to return Data. please check your details',
       );
       console.log('err', err);
+      this.props.store.rehabProgress = Number(
+        this.props.store.rehabProgress +
+          (1 / this.props.store.timesOfAllVideo) * 100,
+      ).toFixed(1);
     }
   };
 
@@ -146,12 +161,8 @@ export class VideoDetailesScreen extends React.Component {
                   <Text style={styles.videoTimes}>
                     {'Well done you finish this mission!'}
                   </Text>
-                  <Text style={styles.videoTimes}>
-                    {' '}
-                  </Text>
-                  <Text style={styles.videoTimes}>
-                    {' '}
-                  </Text>
+                  <Text style={styles.videoTimes}> </Text>
+                  <Text style={styles.videoTimes}> </Text>
                 </View>
               </View>
               <View style={styles.ButtonContainer}>
@@ -170,18 +181,18 @@ export class VideoDetailesScreen extends React.Component {
             </View>
           )}
         </View>
-          <View style={styles.ProgressBarAnimated}>
-              <Text style={styles.label}>
-                {`You've made ${this.props.store.rehabProgress}% progress`}{' '}
-              </Text>
-              <ProgressBarAnimated
-                width={300}
-                maxValue={100}
-                value={this.props.store.rehabProgress}
-                backgroundColorOnComplete="#6CC644"
-                backgroundColor="#C9BDBD"
-              />
-          </View>
+        <View style={styles.ProgressBarAnimated}>
+          <Text style={styles.label}>
+            {`You've made ${this.props.store.rehabProgress}% progress`}{' '}
+          </Text>
+          <ProgressBarAnimated
+            width={300}
+            maxValue={100}
+            value={this.props.store.rehabProgress}
+            backgroundColorOnComplete="#6CC644"
+            backgroundColor="#C9BDBD"
+          />
+        </View>
       </SafeAreaView>
     );
   }
@@ -229,7 +240,7 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 5,
     flex: 1,
-    marginTop:260,
+    marginTop: 260,
     textAlign: 'center',
     alignItems: 'center',
   },
@@ -241,5 +252,4 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontFamily: 'Lato-Regular',
   },
-
 });

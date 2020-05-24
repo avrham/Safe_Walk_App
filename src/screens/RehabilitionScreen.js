@@ -35,17 +35,23 @@ export class RehabilitionScreen extends React.Component {
       visible: false,
       Rehab_Plan: [],
       mergeArray: [],
+      progress: 0,
     };
   }
 
   componentDidMount() {
+    this.setState({progress: this.props.store.rehabProgress});
     this.checkIfRehabPlanExsist();
   }
 
-  componentDidUpdate(store) {
-    console.log('aaa')
-    this.getVidoId();
-    
+  componentDidUpdate(prevProps) {
+    if (prevProps.store.rehabProgress != this.state.progress) {
+      this.getVidoId();
+      setTimeout(() => {
+        this.setState({progress: prevProps.store.rehabProgress});
+      }, 500);
+      console.log(prevProps.store.rehabProgress, this.state.progress);
+    }
   }
 
   checkIfRehabPlanExsist = () => {
@@ -57,6 +63,7 @@ export class RehabilitionScreen extends React.Component {
 
   getVidoId = () => {
     this.setState({visible: true});
+    console.log('avi');
     const length = this.props.store.RehabPlan.videos.length;
     let i = 0;
     while (i < length) {
@@ -111,7 +118,7 @@ export class RehabilitionScreen extends React.Component {
       this.state.videoStatusArray,
     );
     this.setState({mergeArray: MergeArray});
-    console.log(this.state.mergeArray);
+    this.props.store.rehabPlanArray = this.state.mergeArray;
 
     setTimeout(() => {
       this.setState({visible: false});
@@ -120,8 +127,9 @@ export class RehabilitionScreen extends React.Component {
 
   FlatListItemSeparator = () => <View style={styles.line} />;
 
-  renderItem = ({item}) =>
-    item.times != 0 ? (
+  renderItem = ({item}) => {
+    console.log(item);
+    return item.times != 0 ? (
       <ListItem
         onPress={() =>
           this.props.navigation.navigate('VideoDetailes', {
@@ -191,6 +199,7 @@ export class RehabilitionScreen extends React.Component {
         chevron={{color: 'white'}}
       />
     );
+  };
 
   render() {
     const {visible} = this.state;

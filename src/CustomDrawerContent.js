@@ -21,7 +21,7 @@ export class CustomDrawerContent extends React.Component {
       item: [
         {
           navOptionName: 'Profile',
-          screenToNavigate: 'MenuTab',
+          screenToNavigate: 'Notifications',
         },
         {
           navOptionName: 'Test',
