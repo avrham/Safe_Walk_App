@@ -6,11 +6,13 @@ import {
   TouchableOpacity,
   Dimensions,
   TextInput,
+  Animated,
+  StyleSheet,
 } from 'react-native';
-import {StyleSheet} from 'react-native';
 import {CustomHeader} from '../export';
 import {observer, inject} from 'mobx-react';
 import {observable} from 'mobx';
+import {CountdownCircleTimer} from 'react-native-countdown-circle-timer';
 
 @inject('store')
 @observer
@@ -20,20 +22,32 @@ export class NotificationsScreen extends React.Component {
       <SafeAreaView style={{flex: 1}}>
         <CustomHeader title="Notification" navigation={this.props.navigation} />
         <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-          <Text>{this.props.store.userDetails.name}</Text>
-          <Text>{this.firemas}</Text>
-          <TextInput
-            style={{
-              paddingLeft: 10,
-              marginTop: 20,
-            }}
-            onChangeText={val => (this.firemas = val)}
-          />
-          <Test firemas={this.firemas} />
+          <CountdownCircleTimer
+            isPlaying
+            duration={10}
+            colors={[['#004777', 0.33], ['#F7B801', 0.33], ['#A30000']]}>
+            {({remainingTime, animatedColor}) => (
+              <Animated.Text
+                style={{...styles.remainingTime, color: animatedColor}}>
+                {remainingTime}
+              </Animated.Text>
+            )}
+          </CountdownCircleTimer>
         </View>
       </SafeAreaView>
     );
   }
 }
 
-const Test = observer(({firemas}) => <Text>{firemas}</Text>);
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#ecf0f1',
+    padding: 8,
+  },
+  remainingTime: {
+    fontSize: 46,
+  },
+});

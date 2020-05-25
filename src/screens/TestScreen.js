@@ -7,6 +7,7 @@ import {
   Image,
   StyleSheet,
   StatusBar,
+  Animated,
 } from 'react-native';
 import {CustomHeader} from '../export';
 import {IMAGE} from '../constans/Image';
@@ -15,6 +16,7 @@ import {observer, inject} from 'mobx-react';
 import axios from 'axios';
 import config from '../../config.json';
 import ProgressBarAnimated from 'react-native-progress-bar-animated';
+import {CountdownCircleTimer} from 'react-native-countdown-circle-timer';
 
 @inject('store')
 @observer
@@ -327,6 +329,7 @@ export class TestScreen extends React.Component {
     return (
       <SafeAreaView style={styles.app}>
         <CustomHeader navigation={this.props.navigation} isTestProcess={true} />
+        <StatusBar barStyle="dark-content" />
         <AnimatedLoader
           visible={visible}
           overlayColor="rgba(255,255,255,0.75)"
@@ -334,21 +337,54 @@ export class TestScreen extends React.Component {
           animationStyle={styles.lottie}
           speed={2}
         />
-        <View
-          style={{
-            flex: 1,
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}>
+        <View style={styles.background}>
           {this.state.shouldStand && (
-            <Text style={styles.message}>
-              Please stand in place for 5 seconds
-            </Text>
+            <View>
+              <Text style={styles.title}>
+                Please stand in place for 3 seconds
+              </Text>
+              <View style={styles.CircleTimer}>
+                <CountdownCircleTimer
+                  isPlaying
+                  duration={3}
+                  colors={[['#004777', 0.33], ['#F7B801', 0.33], ['#A30000']]}>
+                  {({remainingTime, animatedColor}) => (
+                    <Animated.Text
+                      style={{
+                        ...styles.remainingTime,
+                        color: animatedColor,
+                        fontSize: 40,
+                      }}>
+                      {remainingTime}
+                    </Animated.Text>
+                  )}
+                </CountdownCircleTimer>
+              </View>
+            </View>
           )}
           {this.state.shouldWalk && (
-            <Text style={styles.message}>
-              Pleast start walking in a straight line for 15 seconds
-            </Text>
+            <View>
+              <Text style={styles.title}>
+                Pleast start walking in a straight line for 12 seconds
+              </Text>
+              <View style={styles.CircleTimer}>
+                <CountdownCircleTimer
+                  isPlaying
+                  duration={12}
+                  colors={[['#004777', 0.33], ['#F7B801', 0.33], ['#A30000']]}>
+                  {({remainingTime, animatedColor}) => (
+                    <Animated.Text
+                      style={{
+                        ...styles.remainingTime,
+                        color: animatedColor,
+                        fontSize: 20,
+                      }}>
+                      {remainingTime}
+                    </Animated.Text>
+                  )}
+                </CountdownCircleTimer>
+              </View>
+            </View>
           )}
         </View>
       </SafeAreaView>
@@ -443,6 +479,11 @@ const styles = StyleSheet.create({
 
   background: {
     height: '100%',
+    flex: 1,
+    alignItems: 'center',
+  },
+  CircleTimer: {
+    top: 200,
     flex: 1,
     alignItems: 'center',
   },
