@@ -6,11 +6,14 @@ import {
   TouchableOpacity,
   Image,
   ScrollView,
+  ImageBackground,
+  StatusBar,
 } from 'react-native';
 import {StyleSheet} from 'react-native';
 import {IMAGE} from './constans/Image';
 import {observer, inject} from 'mobx-react';
 import {observable} from 'mobx';
+import {NavigationContainer} from '@react-navigation/native';
 
 @inject('store')
 @observer
@@ -21,22 +24,94 @@ export class CustomDrawerContent extends React.Component {
       item: [
         {
           navOptionName: 'Profile',
-          screenToNavigate: 'Notifications',
+          screenToNavigate: 'Profile',
+          icon: IMAGE.ICON_PROFILE,
         },
         {
           navOptionName: 'Test',
           screenToNavigate: 'Test',
+          icon: IMAGE.ICON_TEST_PRESS,
         },
         {
           navOptionName: 'Rehab Plan',
           screenToNavigate: 'RehabPlan',
+          icon: IMAGE.ICON_RP,
         },
       ],
     };
   }
   render() {
     return (
-      <View style={styles.sideMenuContainer}>
+      <ScrollView style={styles.container}>
+        <StatusBar barStyle="light-content" />
+        <ImageBackground
+          source={IMAGE.BACKGRUND}
+          style={{width: undefined, padding: 16, paddingTop: 48}}>
+          <Image
+            source={{uri: this.props.store.userDetails.picture}}
+            style={styles.sideMenuProfileIcon}
+          />
+          <Text style={styles.name}>{this.props.store.userDetails.name}</Text>
+        </ImageBackground>
+        {this.state.item.map(item => (
+          <View style={{flex: 1, flexDirection: 'row', padding: 10, top:25, marginBottom:20}}>
+            <Image
+              source={item.icon}
+              style={{width: 30, height: 30}}
+            />
+            <Text
+              style={{
+                fontSize: 20,
+                left:40
+              }}
+              onPress={() => {
+                this.props.navigation.navigate(item.screenToNavigate);
+              }}>
+              {item.navOptionName}
+            </Text>
+          </View>
+        ))}
+        <TouchableOpacity
+          style={{marginTop: 400, marginLeft: '37%'}}
+          onPress={() => this.props.navigation.navigate('Login')}>
+          <Image
+            style={{width: 40, height: 40}}
+            source={IMAGE.ICON_LOGOUT}
+            resizeMode="contain"
+          />
+          <Text>LogOut</Text>
+        </TouchableOpacity>
+      </ScrollView>
+    );
+  }
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  sideMenuContainer: {
+    width: '100%',
+    height: '100%',
+    paddingTop: 20,
+  },
+  sideMenuProfileIcon: {
+    height: 80,
+    width: 80,
+    borderWidth: 3,
+    borderRadius: 40,
+    borderColor: '#fff',
+  },
+  name: {
+    color: '#fff',
+    fontSize: 20,
+    fontWeight: '800',
+    marginVertical: 8,
+  },
+});
+
+/*
+<View style={styles.sideMenuContainer}>
         <Image
           source={{uri: this.props.store.userDetails.picture}}
           style={styles.sideMenuProfileIcon}
@@ -49,7 +124,6 @@ export class CustomDrawerContent extends React.Component {
             marginTop: 25,
           }}
         />
-        {/*Setting up Navigation Options from option array using loop*/}
         <View style={{width: '100%'}}>
           {this.state.item.map(item => (
             <View
@@ -62,7 +136,7 @@ export class CustomDrawerContent extends React.Component {
               <View style={{marginRight: 10, marginLeft: 20}} />
               <Text
                 style={{
-                  fontSize: 20,
+                  fontSize: 15,
                 }}
                 onPress={() => {
                   this.props.navigation.navigate(item.screenToNavigate);
@@ -83,60 +157,4 @@ export class CustomDrawerContent extends React.Component {
           <Text>LogOut</Text>
         </TouchableOpacity>
       </View>
-    );
-  }
-}
-
-const styles = StyleSheet.create({
-  sideMenuContainer: {
-    width: '100%',
-    height: '100%',
-    backgroundColor: '#C9BDBD',
-    alignItems: 'center',
-    paddingTop: 20,
-  },
-  sideMenuProfileIcon: {
-    top: 20,
-    alignSelf: 'center',
-    height: 100,
-    width: 100,
-    borderWidth: 1,
-    borderRadius: 75,
-  },
-});
-
-/*<SafeAreaView style={{flex: 1}}>
-<View
-  style={{height: 150, alignItems: 'center', justifyContent: 'center'}}>
-  <Image
-    style={{width: 120, height: 120, borderRadius: 100}}
-    source={{
-      uri: this.props.store.userDetails.picture,
-    }}
-    resizeMode="contain"
-  />
-</View>
-<ScrollView style={{marginLeft: 5}}>
-  <TouchableOpacity
-    style={{marginTop: 20}}
-    onPress={() => this.props.navigation.navigate('MenuTab')}>
-    <Text>Profile</Text>
-  </TouchableOpacity>
-  <TouchableOpacity
-    style={{marginTop: 20}}
-    onPress={() => this.props.navigation.navigate('Notifications')}>
-    <Text>Notifications</Text>
-  </TouchableOpacity>
-
-  <TouchableOpacity
-    style={{marginTop: 500, marginLeft: 100}}
-    onPress={() => this.props.navigation.navigate('Login')}>
-    <Image
-      style={{width: 40, height: 40}}
-      source={IMAGE.ICON_LOGOUT}
-      resizeMode="contain"
-    />
-    <Text>LogOut</Text>
-  </TouchableOpacity>
-</ScrollView>
-</SafeAreaView>*/
+*/

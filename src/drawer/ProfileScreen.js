@@ -16,7 +16,7 @@ import {CountdownCircleTimer} from 'react-native-countdown-circle-timer';
 
 @inject('store')
 @observer
-export class NotificationsScreen extends React.Component {
+export class ProfileScreen extends React.Component {
   render() {
     return (
       <SafeAreaView style={{flex: 1}}>

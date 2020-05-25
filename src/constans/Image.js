@@ -13,6 +13,7 @@ const IMAGE = {
   ICOM_ALERT: require('../../assets/images/alert.png'),
   ICON_INSTRUCTION: require('../../assets/images/instruction.png'),
   ICON_TESTOK: require('../../assets/images/testOk.png'),
+  BACKGRUND: require('../../assets/images/backgrund.jpeg'),
 };
 
 export {IMAGE};

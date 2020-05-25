@@ -10,7 +10,7 @@ import {
   InstructionScreen,
   RehabilitionScreen,
   LoginScreen,
-  NotificationsScreen,
+  ProfileScreen,
   CustomHeader,
   CustomDrawerContent,
   VideoDetailesScreen,
@@ -83,14 +83,14 @@ function DrawerNavigator({navigation}) {
       drawerContent={() => <CustomDrawerContent navigation={navigation} />}>
       <Drawer.Screen name="MenuTab" component={TestStack} />
       <Drawer.Screen name="RehabPlan" component={RehabPlanStack} />
-      <Drawer.Screen name="Notifications" component={NotificationsScreen} />
+      <Drawer.Screen name="Profile" component={ProfileScreen} />
     </Drawer.Navigator>
   );
 }
 
 const StackApp = createStackNavigator();
 
-export default function App() {
+export default function App(Drawer) {
   return (
     <Provider store={store}>
       <NavigationContainer>

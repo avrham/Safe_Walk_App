@@ -36,7 +36,6 @@ export class CustomHeader extends React.Component {
           borderBottomColor: '#5D8B91',
           borderBottomWidth: 1,
         }}>
-        <StatusBar color="#C9BDBD" />
         {(isTestScreen || isRehabScreen || !isTestProcess) && (
           <TouchableOpacity
             style={{flex: 1, flexDirection: 'row', alignItems: 'center'}}

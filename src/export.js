@@ -4,5 +4,5 @@ export * from './screens/TestScreen';
 export * from './screens/InstructionScreen';
 export * from './screens/RehabilitionScreen';
 export * from './screens/VideoDetailesScreen';
-export * from './drawer/NotificationsScreen';
+export * from './drawer/ProfileScreen';
 export * from './auth/LoginScreen';
