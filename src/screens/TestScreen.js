@@ -17,6 +17,11 @@ import axios from 'axios';
 import config from '../../config.json';
 import ProgressBarAnimated from 'react-native-progress-bar-animated';
 import {CountdownCircleTimer} from 'react-native-countdown-circle-timer';
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from 'react-native-responsive-screen';
+import {Button} from 'react-native-elements';
 
 @inject('store')
 @observer
@@ -25,9 +30,9 @@ export class TestScreen extends React.Component {
     super(props);
     this.state = {
       visible: false,
-      shouldRenderTestProcessPage: false,
+      shouldRenderTestProcessPage: true,
       abnormality: false,
-      testFinished: false,
+      testFinished: true,
       shouldStand: true,
       shouldWalk: false,
       errorMessage: '',
@@ -259,7 +264,7 @@ export class TestScreen extends React.Component {
       clearTimeout(timeout);
       this.setState({
         visible: false,
-        shouldRenderTestProcessPage: false,
+        shouldRenderTestProcessPage: true,
         abnormality: false,
         testFinished: false,
         shouldStand: true,
@@ -273,6 +278,7 @@ export class TestScreen extends React.Component {
 
   renderTestPage() {
     this.state.errorMessage ? alert(this.state.errorMessage) : null;
+    console.log(this.state.errorMessage);
     return (
       <SafeAreaView style={styles.app}>
         <CustomHeader navigation={this.props.navigation} isTestScreen={true} />
@@ -311,7 +317,7 @@ export class TestScreen extends React.Component {
                 }% progress of your rehab program`}
               </Text>
               <ProgressBarAnimated
-                width={300}
+                width={wp('72%')}
                 maxValue={100}
                 value={this.props.store.rehabProgress}
                 backgroundColorOnComplete="#6CC644"
@@ -340,20 +346,20 @@ export class TestScreen extends React.Component {
         <View style={styles.background}>
           {this.state.shouldStand && (
             <View>
-              <Text style={styles.title}>
-                Please stand in place for 3 seconds
+              <Text style={styles.processTitle}>
+                Please stand in place for 5 seconds
               </Text>
               <View style={styles.CircleTimer}>
                 <CountdownCircleTimer
                   isPlaying
-                  duration={3}
+                  duration={5}
                   colors={[['#004777', 0.33], ['#F7B801', 0.33], ['#A30000']]}>
                   {({remainingTime, animatedColor}) => (
                     <Animated.Text
                       style={{
                         ...styles.remainingTime,
                         color: animatedColor,
-                        fontSize: 40,
+                        fontSize: wp('25%'),
                       }}>
                       {remainingTime}
                     </Animated.Text>
@@ -364,20 +370,20 @@ export class TestScreen extends React.Component {
           )}
           {this.state.shouldWalk && (
             <View>
-              <Text style={styles.title}>
-                Pleast start walking in a straight line for 12 seconds
+              <Text style={styles.processTitle}>
+                Pleast start walking in a straight line for 15 seconds
               </Text>
               <View style={styles.CircleTimer}>
                 <CountdownCircleTimer
                   isPlaying
-                  duration={12}
+                  duration={15}
                   colors={[['#004777', 0.33], ['#F7B801', 0.33], ['#A30000']]}>
                   {({remainingTime, animatedColor}) => (
                     <Animated.Text
                       style={{
                         ...styles.remainingTime,
                         color: animatedColor,
-                        fontSize: 20,
+                        fontSize: wp('25%'),
                       }}>
                       {remainingTime}
                     </Animated.Text>
@@ -395,6 +401,7 @@ export class TestScreen extends React.Component {
     return (
       <SafeAreaView style={styles.app}>
         <CustomHeader navigation={this.props.navigation} isTestProcess={true} />
+        <StatusBar barStyle="dark-content" />
         <View
           style={{
             flex: 1,
@@ -435,6 +442,14 @@ export class TestScreen extends React.Component {
               </View>
             </SafeAreaView>
           )}
+
+          <Button
+            style={styles.BackButton}
+            onPress={() => this.setState({shouldRenderTestProcessPage: false})}
+            title="Back Home"
+            type="outline"
+            //containerStyle={{color: 'black'}}
+          />
         </View>
       </SafeAreaView>
     );
@@ -458,32 +473,32 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   message: {
-    fontSize: 20,
+    fontSize: wp('6%'),
     fontFamily: 'ComicNeue-BoldItalic',
     justifyContent: 'center',
     textAlign: 'center',
-    padding: 20,
+    padding: wp('5%'),
   },
   alertImg: {
-    width: 50,
-    height: 50,
-    marginBottom: 50,
+    width: wp('10%'),
+    height: hp('10%'),
+    marginBottom: hp('7%'),
   },
   SafeAreaAlert: {
     flex: 1,
   },
   lottie: {
-    width: 100,
-    height: 100,
+    width: wp('55%'),
+    height: hp('10%'),
   },
 
   background: {
-    height: '100%',
     flex: 1,
     alignItems: 'center',
   },
+
   CircleTimer: {
-    top: 200,
+    top: hp('30%'),
     flex: 1,
     alignItems: 'center',
   },
@@ -491,51 +506,75 @@ const styles = StyleSheet.create({
   title: {
     color: 'black',
     fontWeight: 'bold',
-    fontSize: 24,
-    marginBottom: 6,
-    top: 80,
+    fontSize: wp('7%'),
+    marginBottom: wp('3%'),
+    top: hp('7%'),
+  },
+
+  processTitle: {
+    color: 'black',
+    fontWeight: 'bold',
+    fontSize: wp('5.5%'),
+    marginBottom: wp('3%'),
+    top: hp('10%'),
+    textAlign: 'center',
   },
 
   sentence: {
     color: 'black',
     fontWeight: 'bold',
-    fontSize: 20,
+    fontSize: wp('5%'),
     opacity: 0.8,
-    top: 85,
+    top: hp('7%'),
   },
 
   button: {
     backgroundColor: '#5D8B91',
-    height: 200,
-    width: 200,
+    height: hp('23%'),
+    width: wp('50%'),
     padding: 5,
-    borderRadius: 400,
-    top: 200,
+    borderRadius: hp('23%'),
+    top: hp('20%'),
     alignItems: 'center',
     justifyContent: 'center',
-    borderWidth: 2,
+    borderWidth: 4,
     borderColor: '#C9BDBD',
+  },
+  BackButton: {
+    marginBottom: hp('5%'),
+    textAlign: 'center',
+    justifyContent: 'center',
+    borderColor: '#5D8B91',
+    borderRadius: 5,
+    width: wp('63%'),
+    height: hp('6%'),
+    alignItems: 'center',
+  },
+  BackBtnTitle: {
+    fontSize: wp('5.5%'),
+    color: '#5D8B91',
+    backgroundColor: '#5D8B91',
   },
 
   buttonText: {
     color: '#FAFAFA',
     fontFamily: 'Lato-Bold',
-    fontSize: 25,
+    fontSize: wp('6%'),
   },
 
   instructionButton: {
-    top: 300,
+    top: hp('30%'),
     textAlign: 'center',
     justifyContent: 'center',
     backgroundColor: '#5D8B91',
     borderRadius: 5,
-    width: 200,
-    height: 42,
+    width: wp('63%'),
+    height: hp('6%'),
     alignItems: 'center',
   },
 
   instructionTitle: {
-    fontSize: 20,
+    fontSize: wp('5.5%'),
     fontFamily: 'Lato-Regular',
     color: '#FAFAFA',
   },
@@ -547,15 +586,15 @@ const styles = StyleSheet.create({
   label: {
     color: 'black',
     opacity: 0.8,
-    fontSize: 14,
+    fontSize: wp('3.5%'),
     fontWeight: '500',
-    marginBottom: 10,
+    marginBottom: wp('3%'),
     textAlign: 'center',
     fontFamily: 'Lato-Regular',
   },
 
   ProgressBarAnimated: {
-    marginTop: 350,
+    marginTop: hp('33%'),
     borderColor: 'black',
     borderWidth: 2,
     borderColor: '#C9BDBD',

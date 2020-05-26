@@ -7,7 +7,6 @@ import {
   Dimensions,
   Image,
   TextInput,
-  AsyncStorage,
   Alert,
   StatusBar,
   KeyboardAvoidingView,
@@ -23,6 +22,10 @@ import {observable, action} from 'mobx';
 import axios from 'axios';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {Input} from 'react-native-elements';
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from 'react-native-responsive-screen';
 
 @inject('store')
 @observer
@@ -41,6 +44,8 @@ export class LoginScreen extends React.Component {
 
   render() {
     const {visible} = this.state;
+    this.state.errorMessage ? alert(this.state.errorMessage) : null;
+
     return (
       <SafeAreaView style={styles.app}>
         <AnimatedLoader
@@ -50,7 +55,7 @@ export class LoginScreen extends React.Component {
           animationStyle={styles.lottie}
           speed={2}
         />
-        <StatusBar barStyle="light-content" />
+        <StatusBar barStyle="dark-content" />
         <KeyboardAvoidingView behavior="padding" style={styles.app}>
           <TouchableWithoutFeedback
             style={styles.app}
@@ -69,7 +74,7 @@ export class LoginScreen extends React.Component {
                   placeholderTextColor={'rgba(255,255,255,0.8)'}
                   keyboardType="email-address"
                   returnKeyType="next"
-                  autoCorrect={false}
+                  autoCorrect={true}
                   onSubmitEditing={() => this.refs.txtPassword.focus()}
                 />
                 <TextInput
@@ -165,8 +170,8 @@ export class LoginScreen extends React.Component {
 
   login = async () => {
     this.setState({visible: true});
-    this.props.store.rehabProgress = 0;
 
+    this.props.store.rehabProgress = 0;
     //const m = 'ziperfal@gmail.com';
     //const p = '123456';
     const m = 'aneeman@gmail.com';
@@ -184,8 +189,8 @@ export class LoginScreen extends React.Component {
 
     try {
       const url = await axios(options);
-      console.log(url);
       if (url.status === 200) {
+        console.log(url.date);
         this.props.store.userLoginDetails = url.data;
         this.getPatientDetails();
       } else {
@@ -195,7 +200,6 @@ export class LoginScreen extends React.Component {
       alert(
         'error has occured when trying to log in. please check your details',
       );
-      console.log('err', err);
     }
     this.onLoginSucsess();
   };
@@ -203,8 +207,8 @@ export class LoginScreen extends React.Component {
 
 const styles = StyleSheet.create({
   lottie: {
-    width: 100,
-    height: 100,
+    width: wp('10%'),
+    height: hp('10%'),
   },
   loader: {
     position: 'absolute',
@@ -220,39 +224,33 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   logo: {
-    width: 260,
-    height: 100,
+    width: wp('55%'),
+    height: hp('10%'),
   },
-  title: {
-    color: '#C9BDBD',
-    fontFamily: 'Lato-Bold',
-    fontSize: 20,
-    textAlign: 'center',
-    marginTop: 8,
-    opacity: 0.9,
-  },
+
   infoContainer: {
     position: 'absolute',
     left: 0,
     right: 0,
     bottom: 0,
-    height: 200,
+    height: hp('25%'),
     padding: 20,
   },
   input: {
-    height: 40,
+    height: hp('5%'),
     backgroundColor: 'rgba(255,255,255,0.2)',
     color: '#FFF',
     paddingHorizontal: 10,
     marginBottom: 20,
     borderRadius: 6,
     borderWidth: 0.5,
+    fontSize: wp('4%'),
   },
 
   buttonContainer: {
     backgroundColor: '#f7c744',
-    //width: Dimensions.get('window').width * 0.75,
-    //height: Dimensions.get('window').height * 0.058,
+    width: Dimensions.get('window').width * 0.9,
+    height: Dimensions.get('window').height * 0.058,
     borderRadius: 9,
     paddingVertical: 15,
     alignItems: 'center',
@@ -260,7 +258,6 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: 'rgb(32,53,70)',
-    //fontFamily: 'ComicNeue-BoldItalic',
     fontSize: 19,
     textAlign: 'center',
     fontWeight: 'bold',
@@ -271,19 +268,3 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
   },
 });
-
-/*
-  textInput: {
-    borderWidth: 0.5,
-    borderRadius: 6,
-    backgroundColor: 'white',
-    borderColor: '#505f35',
-    width: Dimensions.get('window').width * 0.78,
-    height: Dimensions.get('window').height * 0.06,
-    top: 100,
-    fontSize: 18,
-    fontFamily: 'ComicNeue-BoldItalic',
-    color: 'black',
-    paddingLeft: 10,
-    marginTop: 20,
-  },*/

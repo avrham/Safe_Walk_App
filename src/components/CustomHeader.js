@@ -1,17 +1,13 @@
 import React, {Component} from 'react';
-import {
-  Text,
-  View,
-  SafeAreaView,
-  Image,
-  TouchableOpacity,
-  ScrollView,
-  StatusBar,
-} from 'react-native';
+import {Text, View, SafeAreaView, Image, TouchableOpacity} from 'react-native';
 import {StyleSheet} from 'react-native';
 import {IMAGE} from '../constans/Image';
 import {observer, inject} from 'mobx-react';
 import {AnimatedCircularProgress} from 'react-native-circular-progress';
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from 'react-native-responsive-screen';
 
 @inject('store')
 @observer
@@ -32,7 +28,7 @@ export class CustomHeader extends React.Component {
       <SafeAreaView
         style={{
           flexDirection: 'row',
-          height: 100,
+          height: hp('10%'),
           borderBottomColor: '#5D8B91',
           borderBottomWidth: 1,
         }}>
@@ -47,7 +43,7 @@ export class CustomHeader extends React.Component {
           style={{
             flex: 1,
             justifyContent: 'center',
-            right: 25,
+            right: wp('40%'),
           }}>
           {(isTestScreen || isRehabScreen) && (
             <SafeAreaView>
@@ -65,11 +61,11 @@ export class CustomHeader extends React.Component {
               style={{flexDirection: 'row', alignItems: 'center'}}
               onPress={() => navigation.goBack()}>
               <Image
-                style={{width: 25, height: 25}}
+                style={{width: wp('6%'), height: hp('5%')}}
                 source={IMAGE.ICON_RETURN}
                 resizeMode="contain"
               />
-              <Text style={{color: '#5D8B91'}}>Back</Text>
+              <Text style={{width: wp('10%'), color: '#5D8B91'}}>Back</Text>
             </TouchableOpacity>
           )}
           {videoDetailes && (
@@ -77,17 +73,23 @@ export class CustomHeader extends React.Component {
               style={{flexDirection: 'row', alignItems: 'center'}}
               onPress={() => this.props.navigation.navigate('RehabPlan')}>
               <Image
-                style={{width: 25, height: 25}}
+                style={{width: wp('6%'), height: hp('5%')}}
                 source={IMAGE.ICON_RETURN}
                 resizeMode="contain"
               />
-              <Text style={{color: '#5D8B91'}}>Back</Text>
+              <Text style={{width: wp('10%'), color: '#5D8B91'}}>Back</Text>
             </TouchableOpacity>
           )}
           {isTestProcess && (
-            <TouchableOpacity style={{}}>
+            <TouchableOpacity
+              disabled={true}
+              style={{flex: 1, flexDirection: 'row', alignItems: 'center'}}>
               <Image
-                style={{marginLeft: 173, width: 125, height: 49}}
+                style={{
+                  marginLeft: wp('73%'),
+                  width: wp('34%'),
+                  height: hp('6%'),
+                }}
                 source={IMAGE.ICON_LOGO}
               />
             </TouchableOpacity>
@@ -96,8 +98,7 @@ export class CustomHeader extends React.Component {
         <View
           style={{
             justifyContent: 'center',
-            marginLeft: 300,
-            right: 15,
+            right: wp('3%'),
           }}>
           <Image
             source={{uri: this.props.store.userDetails.picture}}
@@ -112,14 +113,14 @@ export class CustomHeader extends React.Component {
 const styles = StyleSheet.create({
   sideMenuProfileIcon: {
     alignSelf: 'center',
-    height: 50,
-    width: 50,
+    height: hp('6%'),
+    width: wp('13%'),
     borderWidth: 1,
     borderRadius: 75,
   },
   logoIcon: {
-    marginLeft: 148,
-    width: 125,
-    height: 49,
+    marginLeft: wp('33%'),
+    width: wp('34%'),
+    height: hp('6%'),
   },
 });

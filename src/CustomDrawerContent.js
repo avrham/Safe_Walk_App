@@ -14,6 +14,10 @@ import {IMAGE} from './constans/Image';
 import {observer, inject} from 'mobx-react';
 import {observable} from 'mobx';
 import {NavigationContainer} from '@react-navigation/native';
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from 'react-native-responsive-screen';
 
 @inject('store')
 @observer
@@ -43,10 +47,9 @@ export class CustomDrawerContent extends React.Component {
   render() {
     return (
       <ScrollView style={styles.container}>
-        <StatusBar barStyle="light-content" />
         <ImageBackground
           source={IMAGE.BACKGRUND}
-          style={{width: undefined, padding: 16, paddingTop: 48}}>
+          style={{width: undefined, padding: hp('2%'), paddingTop: hp('8%')}}>
           <Image
             source={{uri: this.props.store.userDetails.picture}}
             style={styles.sideMenuProfileIcon}
@@ -54,15 +57,26 @@ export class CustomDrawerContent extends React.Component {
           <Text style={styles.name}>{this.props.store.userDetails.name}</Text>
         </ImageBackground>
         {this.state.item.map(item => (
-          <View style={{flex: 1, flexDirection: 'row', padding: 10, top:25, marginBottom:20}}>
+          <View
+            style={{
+              flex: 1,
+              flexDirection: 'row',
+              padding: hp('1.5%'),
+              top: hp('2.5%'),
+              marginBottom: hp('2%'),
+            }}>
             <Image
               source={item.icon}
-              style={{width: 30, height: 30}}
+              style={{
+                marginLeft: wp('3%'),
+                width: wp('7%'),
+                height: hp('3.5%'),
+              }}
             />
             <Text
               style={{
-                fontSize: 20,
-                left:40
+                fontSize: wp('5%'),
+                left: wp('7%'),
               }}
               onPress={() => {
                 this.props.navigation.navigate(item.screenToNavigate);
@@ -72,7 +86,7 @@ export class CustomDrawerContent extends React.Component {
           </View>
         ))}
         <TouchableOpacity
-          style={{marginTop: 400, marginLeft: '37%'}}
+          style={{marginTop: hp('36%'), marginLeft: wp('27%')}}
           onPress={() => this.props.navigation.navigate('Login')}>
           <Image
             style={{width: 40, height: 40}}
@@ -90,71 +104,17 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  sideMenuContainer: {
-    width: '100%',
-    height: '100%',
-    paddingTop: 20,
-  },
   sideMenuProfileIcon: {
-    height: 80,
-    width: 80,
+    height: hp('9%'),
+    width: wp('20%'),
     borderWidth: 3,
     borderRadius: 40,
     borderColor: '#fff',
   },
   name: {
     color: '#fff',
-    fontSize: 20,
-    fontWeight: '800',
+    fontSize: wp('5%'),
+    fontWeight: 'bold',
     marginVertical: 8,
   },
 });
-
-/*
-<View style={styles.sideMenuContainer}>
-        <Image
-          source={{uri: this.props.store.userDetails.picture}}
-          style={styles.sideMenuProfileIcon}
-        />
-        <View
-          style={{
-            width: '100%',
-            height: 1,
-            backgroundColor: '#e2e2e2',
-            marginTop: 25,
-          }}
-        />
-        <View style={{width: '100%'}}>
-          {this.state.item.map(item => (
-            <View
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                paddingTop: 10,
-                paddingBottom: 10,
-              }}>
-              <View style={{marginRight: 10, marginLeft: 20}} />
-              <Text
-                style={{
-                  fontSize: 15,
-                }}
-                onPress={() => {
-                  this.props.navigation.navigate(item.screenToNavigate);
-                }}>
-                {item.navOptionName}
-              </Text>
-            </View>
-          ))}
-        </View>
-        <TouchableOpacity
-          style={{marginTop: 500}}
-          onPress={() => this.props.navigation.navigate('Login')}>
-          <Image
-            style={{width: 40, height: 40}}
-            source={IMAGE.ICON_LOGOUT}
-            resizeMode="contain"
-          />
-          <Text>LogOut</Text>
-        </TouchableOpacity>
-      </View>
-*/
