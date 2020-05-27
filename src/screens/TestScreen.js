@@ -30,9 +30,9 @@ export class TestScreen extends React.Component {
     super(props);
     this.state = {
       visible: false,
-      shouldRenderTestProcessPage: true,
+      shouldRenderTestProcessPage: false,
       abnormality: false,
-      testFinished: true,
+      testFinished: false,
       shouldStand: true,
       shouldWalk: false,
       errorMessage: '',
