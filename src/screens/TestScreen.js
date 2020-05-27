@@ -9,19 +9,19 @@ import {
   StatusBar,
   Animated,
 } from 'react-native';
-import {CustomHeader} from '../export';
-import {IMAGE} from '../constans/Image';
+import { CustomHeader } from '../export';
+import { IMAGE } from '../constans/Image';
 import AnimatedLoader from 'react-native-animated-loader';
-import {observer, inject} from 'mobx-react';
+import { observer, inject } from 'mobx-react';
 import axios from 'axios';
 import config from '../../config.json';
 import ProgressBarAnimated from 'react-native-progress-bar-animated';
-import {CountdownCircleTimer} from 'react-native-countdown-circle-timer';
+import { CountdownCircleTimer } from 'react-native-countdown-circle-timer';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import {Button} from 'react-native-elements';
+import { Button } from 'react-native-elements';
 
 @inject('store')
 @observer
@@ -71,7 +71,7 @@ export class TestScreen extends React.Component {
         };
         const response = await axios.get(
           `${config.SERVER_URL}/sensorsKit/${
-            this.props.store.userDetails.sensorsKitID
+          this.props.store.userDetails.sensorsKitID
           }`,
           options,
         );
@@ -86,7 +86,7 @@ export class TestScreen extends React.Component {
     return new Promise(async (resolve, reject) => {
       try {
         const options = {
-          headers: {'x-auth-token': token},
+          headers: { 'x-auth-token': token },
         };
         const response = await axios.post(
           `${config.SERVER_URL}/test`,
@@ -103,7 +103,7 @@ export class TestScreen extends React.Component {
   async removeTest(token, testID) {
     try {
       const options = {
-        headers: {'x-auth-token': token},
+        headers: { 'x-auth-token': token },
       };
       await axios.delete(`${config.SERVER_URL}/test/${testID}`, options);
       return;
@@ -115,7 +115,7 @@ export class TestScreen extends React.Component {
   updateTest(token, testID, abnormality) {
     return new Promise(async (resolve, reject) => {
       try {
-        const body = {abnormality: abnormality};
+        const body = { abnormality: abnormality };
         const options = {
           headers: {
             'Content-Type': 'application/json',
@@ -137,7 +137,7 @@ export class TestScreen extends React.Component {
   updatePatient(token, patientID, waitingStatus) {
     return new Promise(async (resolve, reject) => {
       try {
-        const body = {waitForPlan: waitingStatus};
+        const body = { waitForPlan: waitingStatus };
         const options = {
           headers: {
             'Content-Type': 'application/json',
@@ -159,7 +159,7 @@ export class TestScreen extends React.Component {
   scanGaitAndAnalyze(ip, sensorName, token, testID) {
     return new Promise(async (resolve, reject) => {
       try {
-        const options = {timeout: 1500};
+        const options = { timeout: 1500 };
         const response = await axios.get(`http://${ip}`, options);
         try {
           const stringLength = response.data.length;
@@ -180,7 +180,7 @@ export class TestScreen extends React.Component {
       } catch (ex) {
         return reject(
           new Error(
-            `${sensorName} has failed during the sample, please make another test`,
+            `${sensorName} is probably not connected`,
           ),
         );
       }
@@ -189,7 +189,7 @@ export class TestScreen extends React.Component {
 
   analayseData(token, rawData, sensorName, testID) {
     return new Promise(async (resolve, reject) => {
-      if (!this.state.visible) this.setState({visible: true});
+      if (!this.state.visible) this.setState({ visible: true });
       try {
         const body = {
           sensorName: sensorName,
@@ -204,7 +204,7 @@ export class TestScreen extends React.Component {
         };
         const response = await axios.post(
           `${config.SERVER_URL}/sensorsKit/${
-            this.props.store.userDetails.sensorsKitID
+          this.props.store.userDetails.sensorsKitID
           }/analyzeRawData`,
           body,
           options,
@@ -220,12 +220,12 @@ export class TestScreen extends React.Component {
     let testID, timeout;
     const token = this.props.store.userLoginDetails.token;
     try {
-      this.setState({visible: true, errorMessage: ''});
-      const {IPs} = await this.getKitDetails(token);
+      this.setState({ visible: true, errorMessage: '' });
+      const { IPs } = await this.getKitDetails(token);
       const test = await this.createTest(token);
       testID = test.id;
       let promise1; // promise2, promise3, promise4, promise5, promise6, promise7;
-      this.setState({visible: false, shouldRenderTestProcessPage: true});
+      this.setState({ visible: false, shouldRenderTestProcessPage: true });
       timeout = setTimeout(() => {
         this.setState({
           shouldStand: false,
@@ -264,7 +264,7 @@ export class TestScreen extends React.Component {
       clearTimeout(timeout);
       this.setState({
         visible: false,
-        shouldRenderTestProcessPage: true,
+        shouldRenderTestProcessPage: false,
         abnormality: false,
         testFinished: false,
         shouldStand: true,
@@ -314,7 +314,7 @@ export class TestScreen extends React.Component {
               <Text style={styles.label}>
                 {`You've made ${
                   this.props.store.rehabProgress
-                }% progress of your rehab program`}
+                  }% progress of your rehab program`}
               </Text>
               <ProgressBarAnimated
                 width={wp('72%')}
@@ -331,7 +331,7 @@ export class TestScreen extends React.Component {
   }
 
   renderTestProcess() {
-    const {visible} = this.state;
+    const { visible } = this.state;
     return (
       <SafeAreaView style={styles.app}>
         <CustomHeader navigation={this.props.navigation} isTestProcess={true} />
@@ -354,7 +354,7 @@ export class TestScreen extends React.Component {
                   isPlaying
                   duration={5}
                   colors={[['#004777', 0.33], ['#F7B801', 0.33], ['#A30000']]}>
-                  {({remainingTime, animatedColor}) => (
+                  {({ remainingTime, animatedColor }) => (
                     <Animated.Text
                       style={{
                         ...styles.remainingTime,
@@ -378,7 +378,7 @@ export class TestScreen extends React.Component {
                   isPlaying
                   duration={15}
                   colors={[['#004777', 0.33], ['#F7B801', 0.33], ['#A30000']]}>
-                  {({remainingTime, animatedColor}) => (
+                  {({ remainingTime, animatedColor }) => (
                     <Animated.Text
                       style={{
                         ...styles.remainingTime,
@@ -428,27 +428,27 @@ export class TestScreen extends React.Component {
               </View>
             </SafeAreaView>
           ) : (
-            <SafeAreaView style={styles.SafeAreaAlert}>
-              <View style={styles.viewAlert}>
-                <Image
-                  source={IMAGE.ICON_TESTOK}
-                  style={styles.alertImg}
-                  resizeMode="contain"
-                />
-                <Text style={styles.message}>
-                  We're happy to let you know that your Walking model is ok and
-                  not might have problem !
+              <SafeAreaView style={styles.SafeAreaAlert}>
+                <View style={styles.viewAlert}>
+                  <Image
+                    source={IMAGE.ICON_TESTOK}
+                    style={styles.alertImg}
+                    resizeMode="contain"
+                  />
+                  <Text style={styles.message}>
+                    We're happy to let you know that your Walking model is ok and
+                    not might have problem !
                 </Text>
-              </View>
-            </SafeAreaView>
-          )}
+                </View>
+              </SafeAreaView>
+            )}
 
           <Button
             style={styles.BackButton}
-            onPress={() => this.setState({shouldRenderTestProcessPage: false})}
+            onPress={() => this.setState({ shouldRenderTestProcessPage: false })}
             title="Back Home"
             type="outline"
-            //containerStyle={{color: 'black'}}
+          //containerStyle={{color: 'black'}}
           />
         </View>
       </SafeAreaView>

@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React from 'react';
 import {
   Text,
   View,
@@ -13,15 +13,13 @@ import {
   Keyboard,
   TouchableWithoutFeedback,
 } from 'react-native';
-import {StyleSheet} from 'react-native';
+import { StyleSheet } from 'react-native';
 import AnimatedLoader from 'react-native-animated-loader';
-import {IMAGE} from '../constans/Image';
+import { IMAGE } from '../constans/Image';
 import config from '../../config.json';
-import {observer, inject} from 'mobx-react';
-import {observable, action} from 'mobx';
+import { observer, inject } from 'mobx-react';
+import { observable } from 'mobx';
 import axios from 'axios';
-import Icon from 'react-native-vector-icons/FontAwesome';
-import {Input} from 'react-native-elements';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -33,19 +31,80 @@ export class LoginScreen extends React.Component {
   @observable email = '';
   @observable password = '';
 
-  @action onLoginSucsess = () => {
-    (this.email = ''), (this.password = '');
-  };
+  // @action onLoginSucsess = () => {
+  //   (this.email = ''), (this.password = '');
+  // };
 
   constructor(props) {
     super(props);
-    this.state = {visible: false, rehabPlanID: ''};
+    this.state = {
+      visible: false,
+      rehabPlanID: '',
+      errorMessage: ''
+    };
   }
 
-  render() {
-    const {visible} = this.state;
-    this.state.errorMessage ? alert(this.state.errorMessage) : null;
+  resetParameters = () => {
+    this.email = '';
+    this.password = '';
+  };
 
+  login = async () => {
+    this.setState({ visible: true, errorMessage: '' });
+    this.props.store.rehabProgress = 0;
+    // const m = 'aneeman@gmail.com';
+    // const p = 'aaabbb';
+    let options = {
+      method: 'post',
+      url: `${config.SERVER_URL}/auth/login`,
+      data: {
+        // mail: m,
+        // password: p,
+        mail: this.email,
+        password: this.password,
+      },
+      timeout: 2000
+    };
+    try {
+      const loginDetails = await axios(options);
+      options = {
+        url: `${config.SERVER_URL}/patient/${loginDetails.data.id}`,
+        headers: {
+          'x-auth-token': loginDetails.data.token,
+        },
+      };
+      const patient = await axios(options);
+      if (patient.data.rehabPlanID !== '') {
+        options = {
+          url: `${config.SERVER_URL}/rehabPlan/${patient.data.rehabPlanID}`,
+          headers: {
+            'x-auth-token': loginDetails.data.token,
+          },
+        };
+        const rehabPlan = await axios(options);
+        this.props.store.RehabPlan = rehabPlan.data;
+        this.props.navigation.navigate('HomeApp');
+        this.setState({
+          visible: false,
+          rehabPlanID: rehabPlan.data.rehabPlanID
+        });
+      } else {
+        this.setState({ visible: false });
+        this.props.navigation.navigate('HomeApp');
+      }
+      this.props.store.userLoginDetails = loginDetails.data;
+      this.props.store.userDetails = patient.data;
+    } catch (err) {
+      this.setState({
+        visible: false,
+        errorMessage: err.response.data.message
+      });
+    }
+  };
+
+  render() {
+    const { visible } = this.state;
+    this.state.errorMessage ? Alert.alert(this.state.errorMessage) : null;
     return (
       <SafeAreaView style={styles.app}>
         <AnimatedLoader
@@ -64,7 +123,6 @@ export class LoginScreen extends React.Component {
               <View style={styles.logoContainer}>
                 <Image source={IMAGE.ICON_LOGO} style={styles.logo} />
               </View>
-
               <View style={styles.infoContainer}>
                 <TextInput
                   onChangeText={val => (this.email = val)}
@@ -100,109 +158,6 @@ export class LoginScreen extends React.Component {
       </SafeAreaView>
     );
   }
-
-  resetParameters = () => {
-    this.email = '';
-    this.password = '';
-  };
-
-  getPatientDetails = async () => {
-    const options = {
-      method: 'GET',
-      url: `${config.SERVER_URL}/patient/${
-        this.props.store.userLoginDetails.id
-      }`,
-      headers: {
-        'x-auth-token': this.props.store.userLoginDetails.token,
-      },
-    };
-    try {
-      const url = await axios(options);
-      if (url.status === 200) {
-        this.props.store.userDetails = url.data;
-        if (url.data.rehabPlanID != '') {
-          this.getRehabPlan(url.data.rehabPlanID);
-          this.setState({rehabPlanID: url.data.rehabPlanID});
-        } else {
-          setTimeout(() => {
-            this.setState({visible: false});
-            this.props.navigation.navigate('HomeApp');
-          }, 1500);
-        }
-      } else {
-        Alert.alert('error has occured, Please try again in a few minutes');
-      }
-    } catch (err) {
-      Alert.alert(
-        'error has occured when trying to return Data from getPatientDetails query. please check your details',
-      );
-      console.log('err', err);
-    }
-  };
-
-  getRehabPlan = async rehabPlanID => {
-    const options = {
-      method: 'GET',
-      url: `${config.SERVER_URL}/rehabPlan/${rehabPlanID}`,
-      headers: {
-        'x-auth-token': this.props.store.userLoginDetails.token,
-      },
-    };
-    try {
-      const url = await axios(options);
-      if (url.status === 200) {
-        this.props.store.RehabPlan = url.data;
-        console.log(url.data);
-        setTimeout(() => {
-          this.setState({visible: false});
-          this.props.navigation.navigate('HomeApp');
-        }, 1500);
-      } else {
-        Alert.alert('error has occured, Please try again in a few minutes');
-      }
-    } catch (err) {
-      alert(
-        'error has occured when trying to return Data from getRehabPlan query. please check your details',
-      );
-      console.log('err', err);
-    }
-  };
-
-  login = async () => {
-    this.setState({visible: true});
-
-    this.props.store.rehabProgress = 0;
-    //const m = 'ziperfal@gmail.com';
-    //const p = '123456';
-    const m = 'aneeman@gmail.com';
-    const p = 'aaabbb';
-    const options = {
-      method: 'post',
-      url: `${config.SERVER_URL}/auth/login`,
-      data: {
-        mail: m,
-        password: p,
-        //mail: this.email,
-        //password: this.password,
-      },
-    };
-
-    try {
-      const url = await axios(options);
-      if (url.status === 200) {
-        console.log(url.date);
-        this.props.store.userLoginDetails = url.data;
-        this.getPatientDetails();
-      } else {
-        Alert.alert('error has occured, Please try again in a few minutes');
-      }
-    } catch (err) {
-      alert(
-        'error has occured when trying to log in. please check your details',
-      );
-    }
-    this.onLoginSucsess();
-  };
 }
 
 const styles = StyleSheet.create({
